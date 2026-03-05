@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from src.database import get_connection
 
 app = FastAPI(title="AQP Gaming", version="1.0.0")
 
@@ -9,3 +10,16 @@ def inicio():
 @app.get("/health")
 def health():
     return {"estado": "funcionando"}
+
+@app.get("/db-test")
+def test_db():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM genero")
+        resultado = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return {"estado": "conexion exitosa", "registros_genero": resultado[0]}
+    except Exception as e:
+        return {"estado": "error", "detalle": str(e)}
