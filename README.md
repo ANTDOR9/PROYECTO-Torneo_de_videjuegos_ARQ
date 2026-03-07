@@ -23,3 +23,11 @@ aqp-gaming/
 ├── README.md
 └── .env.example           ← variables de entorno SIN valores reales
 ~~~
+falta construir estoo mayoooo:
+~~~
+Lo que el usuario ve          Lo que ya tienes
+─────────────────────         ─────────────────
+Página web con diseño    ←→   FastAPI (backend)
+Formulario de registro   ←→   Endpoint /jugadores
+Lista de torneos         ←→   Endpoint /torneos
+Bracket visual           ←→   Endpoint /fases
