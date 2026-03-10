@@ -31,3 +31,4 @@ Página web con diseño    ←→   FastAPI (backend)
 Formulario de registro   ←→   Endpoint /jugadores
 Lista de torneos         ←→   Endpoint /torneos
 Bracket visual           ←→   Endpoint /fases
+...
