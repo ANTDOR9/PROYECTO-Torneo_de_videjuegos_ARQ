@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from src.database import get_connection
+from src.routes.generos import router as generos_router
 
 app = FastAPI(title="AQP Gaming", version="1.0.0")
+
+app.include_router(generos_router, prefix="/api")
 
 @app.get("/")
 def inicio():
