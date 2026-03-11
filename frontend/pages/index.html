@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQP Gaming — Torneos</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAVBAR */
+    nav {
+      background: #111;
+      border-bottom: 2px solid #cc0000;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav .logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #cc0000;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    nav .logo span { color: #fff; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 32px;
+    }
+
+    nav ul a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: #cc0000; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%);
+      border-bottom: 1px solid #cc0000;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    .hero h1 span { color: #cc0000; }
+
+    .hero p {
+      color: #888;
+      margin-top: 12px;
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .hero .btn-nuevo {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 12px 32px;
+      background: #cc0000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .hero .btn-nuevo:hover { background: #ff0000; }
+
+    /* CONTENIDO */
+    .contenido {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+
+    .seccion-titulo {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #cc0000;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .seccion-titulo::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #222;
+    }
+
+    /* GRID TORNEOS */
+    .torneos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .torneo-card {
+      background: #111;
+      border: 1px solid #222;
+      border-top: 3px solid #cc0000;
+      padding: 24px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .torneo-card:hover {
+      border-color: #cc0000;
+      transform: translateY(-3px);
+    }
+
+    .torneo-card .juego {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #cc0000;
+      margin-bottom: 8px;
+    }
+
+    .torneo-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .torneo-card .info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .torneo-card .fecha {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .estado {
+      padding: 4px 10px;
+      border-radius: 2px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .estado-inscripcion { background: rgba(0,200,100,0.15); color: #00c864; }
+    .estado-en-curso    { background: rgba(204,0,0,0.15);   color: #cc0000; }
+    .estado-finalizado  { background: rgba(100,100,100,0.15); color: #666; }
+
+    .premio {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffcc00;
+      margin-top: 8px;
+    }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      color: #444;
+      padding: 60px;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+
+    /* EMPTY */
+    .empty {
+      text-align: center;
+      color: #444;
+      padding: 60px;
+      border: 1px dashed #222;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AQP<span>Gaming</span></div>
+  <ul>
+    <li><a href="index.html">Torneos</a></li>
+    <li><a href="equipos.html">Equipos</a></li>
+    <li><a href="registro.html">Registrarse</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <h1>Liga de <span>eSports</span> Arequipa</h1>
+  <p>Compite. Domina. Gana.</p>
+  <a href="registro.html" class="btn-nuevo">Unirse ahora</a>
+</div>
+
+<div class="contenido">
+  <div class="seccion-titulo">Torneos Activos</div>
+  <div class="torneos-grid" id="torneos-grid">
+    <div class="loading">Cargando torneos...</div>
+  </div>
+</div>
+
+<script>
+  const API = 'http://127.0.0.1:8000/api';
+
+  async function cargarTorneos() {
+    const grid = document.getElementById('torneos-grid');
+    try {
+      const res = await fetch(`${API}/torneos`);
+      const torneos = await res.json();
+
+      if (torneos.length === 0) {
+        grid.innerHTML = '<div class="empty">No hay torneos disponibles aún.</div>';
+        return;
+      }
+
+      grid.innerHTML = torneos.map(t => `
+        <a class="torneo-card" href="torneo.html?id=${t.id}">
+          <div class="juego">${t.videojuego}</div>
+          <h3>${t.nombre}</h3>
+          ${t.premio_total ? `<div class="premio">S/ ${t.premio_total.toFixed(2)}</div>` : ''}
+          <div class="info">
+            <span class="fecha">📅 ${t.fecha_inicio}</span>
+            <span class="estado estado-${t.estado.toLowerCase().replace(' ','-')}">${t.estado}</span>
+          </div>
+        </a>
+      `).join('');
+    } catch(e) {
+      grid.innerHTML = '<div class="empty">Error al cargar torneos. Verifica que el servidor esté corriendo.</div>';
+    }
+  }
+
+  cargarTorneos();
+</script>
+
+</body>
+</html>
