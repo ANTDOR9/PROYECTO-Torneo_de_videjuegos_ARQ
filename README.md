@@ -32,3 +32,17 @@ Formulario de registro   ←→   Endpoint /jugadores
 Lista de torneos         ←→   Endpoint /torneos
 Bracket visual           ←→   Endpoint /fases
 ...
+~~~
+
+actuazlizacion de archivos HTML:
+~~~
+frontend/
+├── pages/
+│   ├── index.html        ← página principal con lista de torneos
+│   ├── torneo.html       ← detalle de un torneo con sus fases
+│   ├── registro.html     ← registrar jugador nuevo
+│   └── equipos.html      ← ver y crear equipos
+├── components/
+│   └── navbar.html       ← barra de navegación reutilizable
+└── services/
+    └── api.js            ← funciones para llamar al backend
