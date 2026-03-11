@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQP Gaming — Equipos</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: #111;
+      border-bottom: 2px solid #cc0000;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+    }
+
+    nav .logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #cc0000;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    nav .logo span { color: #fff; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    nav ul a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: #cc0000; }
+
+    .btn-perfil {
+      background: transparent;
+      border: 1px solid #cc0000;
+      color: #cc0000;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-perfil:hover { background: #cc0000; color: #fff; }
+
+    .hero {
+      background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%);
+      border-bottom: 1px solid #222;
+      padding: 48px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 span { color: #cc0000; }
+
+    .btn-crear {
+      padding: 12px 28px;
+      background: #cc0000;
+      color: #fff;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-crear:hover { background: #ff0000; }
+
+    .contenido {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    .seccion-titulo {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #cc0000;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .seccion-titulo::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #222;
+    }
+
+    .equipos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .equipo-card {
+      background: #111;
+      border: 1px solid #222;
+      border-top: 3px solid #cc0000;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .equipo-card:hover {
+      transform: translateY(-3px);
+      border-color: #cc0000;
+    }
+
+    .equipo-card .juego {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #cc0000;
+      margin-bottom: 8px;
+    }
+
+    .equipo-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .equipo-card .capitan {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    .equipo-card .capitan span { color: #aaa; }
+
+    .estado {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .activo-S { background: rgba(0,200,100,0.15); color: #00c864; }
+    .activo-N { background: rgba(100,100,100,0.15); color: #666; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.visible { display: flex; }
+
+    .modal {
+      background: #111;
+      border: 1px solid #222;
+      border-top: 3px solid #cc0000;
+      padding: 40px;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .modal h2 {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .modal h2 span { color: #cc0000; }
+
+    .campo {
+      margin-bottom: 20px;
+    }
+
+    .campo label {
+      display: block;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .campo input,
+    .campo select {
+      width: 100%;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      color: #fff;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .campo input:focus,
+    .campo select:focus { border-color: #cc0000; }
+
+    .campo select option { background: #111; }
+
+    .modal-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-submit {
+      flex: 1;
+      padding: 12px;
+      background: #cc0000;
+      color: #fff;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover { background: #ff0000; }
+
+    .btn-cancelar {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      color: #666;
+      border: 1px solid #333;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancelar:hover { border-color: #666; color: #aaa; }
+
+    .mensaje {
+      margin-top: 16px;
+      padding: 10px;
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+    }
+
+    .mensaje.error { background: rgba(204,0,0,0.15); color: #ff4444; border: 1px solid #cc0000; }
+    .mensaje.exito { background: rgba(0,200,100,0.15); color: #00c864; border: 1px solid #00c864; }
+
+    .loading {
+      text-align: center;
+      color: #444;
+      padding: 60px;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #444;
+      padding: 60px;
+      border: 1px dashed #222;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AQP<span>Gaming</span></div>
+  <ul>
+    <li><a href="index.html">Torneos</a></li>
+    <li><a href="equipos.html">Equipos</a></li>
+    <li id="nav-sesion"></li>
+  </ul>
+</nav>
+
+<div style="max-width:1100px; margin:0 auto;">
+  <div class="hero">
+    <div>
+      <h1>Equipos <span>Registrados</span></h1>
+      <p style="color:#555; margin-top:8px; font-size:0.9rem;">Organizaciones compitiendo en AQP Gaming</p>
+    </div>
+    <button class="btn-crear" onclick="abrirModal()">+ Crear Equipo</button>
+  </div>
+</div>
+
+<div class="contenido">
+  <div class="seccion-titulo">Todos los equipos</div>
+  <div class="equipos-grid" id="equipos-grid">
+    <div class="loading">Cargando equipos...</div>
+  </div>
+</div>
+
+<!-- MODAL CREAR EQUIPO -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Crear <span>Equipo</span></h2>
+
+    <div class="campo">
+      <label>Nombre del equipo</label>
+      <input type="text" id="nombre-equipo" placeholder="Team AQP">
+    </div>
+
+    <div class="campo">
+      <label>Videojuego</label>
+      <select id="videojuego-equipo"></select>
+    </div>
+
+    <div class="mensaje" id="msg-equipo"></div>
+
+    <div class="modal-btns">
+      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-submit" onclick="crearEquipo()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = 'https://proyecto-torneodevidejuegosarq-production.up.railway.app/api';
+
+  function configurarNavbar() {
+    const jugadorData = localStorage.getItem('jugador');
+    const navSesion = document.getElementById('nav-sesion');
+    if (jugadorData) {
+      const jugador = JSON.parse(jugadorData);
+      navSesion.innerHTML = `<a href="perfil.html" class="btn-perfil">👤 ${jugador.gamertag}</a>`;
+    } else {
+      navSesion.innerHTML = `<a href="login.html" class="btn-perfil">Iniciar sesión</a>`;
+    }
+  }
+
+  async function cargarEquipos() {
+    const grid = document.getElementById('equipos-grid');
+    try {
+      const res = await fetch(`${API}/equipos`);
+      const equipos = await res.json();
+
+      if (equipos.length === 0) {
+        grid.innerHTML = '<div class="empty">No hay equipos registrados aún.</div>';
+        return;
+      }
+
+      grid.innerHTML = equipos.map(e => `
+        <div class="equipo-card">
+          <div class="juego">${e.videojuego}</div>
+          <h3>${e.nombre}</h3>
+          <div class="capitan">Capitán: <span>${e.capitan}</span></div>
+          ${e.fecha_creacion ? `<div class="capitan">Fundado: <span>${e.fecha_creacion}</span></div>` : ''}
+          <span class="estado activo-${e.activo}">${e.activo === 'S' ? 'Activo' : 'Inactivo'}</span>
+        </div>
+      `).join('');
+    } catch(e) {
+      grid.innerHTML = '<div class="empty">Error al cargar equipos.</div>';
+    }
+  }
+
+  async function abrirModal() {
+    const jugadorData = localStorage.getItem('jugador');
+    if (!jugadorData) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const select = document.getElementById('videojuego-equipo');
+    if (select.options.length === 0) {
+      const res = await fetch(`${API}/videojuegos`);
+      const juegos = await res.json();
+      juegos.forEach(j => {
+        const opt = document.createElement('option');
+        opt.value = j.id;
+        opt.textContent = j.nombre;
+        select.appendChild(opt);
+      });
+    }
+
+    document.getElementById('modal').classList.add('visible');
+  }
+
+  function cerrarModal() {
+    document.getElementById('modal').classList.remove('visible');
+  }
+
+  async function crearEquipo() {
+    const jugador = JSON.parse(localStorage.getItem('jugador'));
+    const nombre = document.getElementById('nombre-equipo').value;
+    const id_videojuego = parseInt(document.getElementById('videojuego-equipo').value);
+    const msg = document.getElementById('msg-equipo');
+
+    if (!nombre) {
+      msg.textContent = 'Escribe el nombre del equipo';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/equipos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre,
+          id_videojuego,
+          id_capitan: jugador.id
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        msg.textContent = data.error;
+        msg.className = 'mensaje error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      msg.textContent = '¡Equipo creado exitosamente!';
+      msg.className = 'mensaje exito';
+      msg.style.display = 'block';
+
+      setTimeout(() => {
+        cerrarModal();
+        cargarEquipos();
+      }, 1500);
+
+    } catch(e) {
+      msg.textContent = 'Error al conectar con el servidor';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+    }
+  }
+
+  configurarNavbar();
+  cargarEquipos();
+</script>
+
+</body>
+</html>
