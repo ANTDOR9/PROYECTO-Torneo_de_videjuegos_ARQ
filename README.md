@@ -57,3 +57,36 @@ Team B ─┘            ├─ Team A 🏆
 Team C ─┐            │
          ├─ Team C ─┘
 Team D ─┘
+
+
+
+Backend ✅
+
+FastAPI con 7 endpoints funcionando
+Sistema de login y registro con JWT
+Subida de avatares
+Conectado a PostgreSQL en Railway
+
+Base de datos ✅
+
+18 tablas diseñadas y creadas
+Datos iniciales cargados
+Corriendo en la nube 24/7
+
+Frontend ✅
+
+Página principal con video de fondo
+Página de registro y login
+Página de perfil con foto
+Página de detalle de torneo con bracket
+Estilo gamer rojo/negro
+Desplegado en Vercel
+~~~
+LOGRAAAMOOOOOOOOOOOOOOOOSSSSSSSSSSSSSSSSSSS WIIIIIIIIIIIIIIIIIIIIIIIII
+Lo que falta para tener una app completa:
+
+Página de equipos
+Crear torneo desde la web (ahora solo desde Swagger)
+Inscribirse a un torneo
+Bracket con datos reales
+Panel de administrador
