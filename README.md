@@ -46,3 +46,14 @@ frontend/
 │   └── navbar.html       ← barra de navegación reutilizable
 └── services/
     └── api.js            ← funciones para llamar al backend
+
+
+sistema de competitividad
+
+Cuartos          Semis          Final
+Team A ─┐
+         ├─ Team A ─┐
+Team B ─┘            ├─ Team A 🏆
+Team C ─┐            │
+         ├─ Team C ─┘
+Team D ─┘
