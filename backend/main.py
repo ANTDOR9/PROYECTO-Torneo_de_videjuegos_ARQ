@@ -20,8 +20,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.mount("/avatares", StaticFiles(directory="../frontend/assets/avatares"), name="avatares")
+import os
+os.makedirs("avatares", exist_ok=True)
+app.mount("/avatares", StaticFiles(directory="avatares"), name="avatares")
 
 app.include_router(generos_router, prefix="/api")
 app.include_router(videojuegos_router, prefix="/api")
@@ -43,10 +44,11 @@ def health():
 async def subir_avatar(id_jugador: int, archivo: UploadFile = File(...)):
     ext = archivo.filename.split(".")[-1]
     nombre_archivo = f"avatar_{id_jugador}.{ext}"
-    ruta = f"../frontend/assets/avatares/{nombre_archivo}"
+    ruta = f"avatares/{nombre_archivo}"
     with open(ruta, "wb") as buffer:
         shutil.copyfileobj(archivo.file, buffer)
-    url = f"http://127.0.0.1:8000/avatares/{nombre_archivo}"
+    base_url = os.getenv("BASE_URL", "http://127.0.0.1:8000")
+    url = f"{base_url}/avatares/{nombre_archivo}"
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("UPDATE jugador SET avatar = %s WHERE id_jugador = %s", (url, id_jugador))
