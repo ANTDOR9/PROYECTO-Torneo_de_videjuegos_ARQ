@@ -90,3 +90,12 @@ Crear torneo desde la web (ahora solo desde Swagger)
 Inscribirse a un torneo
 Bracket con datos reales
 Panel de administrador
+
+~~~
+
+Página de equipos — nunca se terminó, es una página rota en la navbar
+Inscribirse a un torneo — sin esto la app no tiene sentido competitivo
+Crear torneo desde la web — ahora solo se puede desde Swagger
+Bracket con datos reales — ahora muestra TBD, necesita partidas reales
+Panel de administrador — para gestionar torneos, jugadores y resultados
+Perfil con historial — mostrar torneos en los que participó el jugador
