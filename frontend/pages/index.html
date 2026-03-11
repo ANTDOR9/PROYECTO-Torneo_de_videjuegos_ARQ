@@ -14,7 +14,6 @@
       min-height: 100vh;
     }
 
-    /* NAVBAR */
     nav {
       background: #111;
       border-bottom: 2px solid #cc0000;
@@ -22,6 +21,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: relative;
+      z-index: 10;
     }
 
     nav .logo {
@@ -38,6 +39,7 @@
       list-style: none;
       display: flex;
       gap: 32px;
+      align-items: center;
     }
 
     nav ul a {
@@ -51,31 +53,81 @@
 
     nav ul a:hover { color: #cc0000; }
 
+    .btn-perfil {
+      background: transparent;
+      border: 1px solid #cc0000;
+      color: #cc0000;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-perfil:hover { background: #cc0000; color: #fff; }
+
     /* HERO */
     .hero {
-      background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%);
-      border-bottom: 1px solid #cc0000;
-      padding: 60px 40px;
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-fondo {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    .video-fondo iframe {
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      transform: scale(1.5);
+    }
+    .video-fondo video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
+
+    .video-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.65);
+      border-bottom: 2px solid #cc0000;
+    }
+
+    .hero-contenido {
+      position: relative;
+      z-index: 1;
       text-align: center;
     }
 
-    .hero h1 {
+    .hero-contenido h1 {
       font-size: 3rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 4px;
     }
 
-    .hero h1 span { color: #cc0000; }
+    .hero-contenido h1 span { color: #cc0000; }
 
-    .hero p {
+    .hero-contenido p {
       color: #888;
       margin-top: 12px;
       font-size: 1rem;
       letter-spacing: 1px;
     }
 
-    .hero .btn-nuevo {
+    .hero-contenido .btn-nuevo {
       display: inline-block;
       margin-top: 28px;
       padding: 12px 32px;
@@ -85,13 +137,11 @@
       font-weight: 700;
       letter-spacing: 2px;
       text-transform: uppercase;
-      border: none;
-      cursor: pointer;
       font-size: 0.9rem;
       transition: background 0.2s;
     }
 
-    .hero .btn-nuevo:hover { background: #ff0000; }
+    .hero-contenido .btn-nuevo:hover { background: #ff0000; }
 
     /* CONTENIDO */
     .contenido {
@@ -119,7 +169,6 @@
       background: #222;
     }
 
-    /* GRID TORNEOS */
     .torneos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -171,7 +220,6 @@
 
     .estado {
       padding: 4px 10px;
-      border-radius: 2px;
       font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 1px;
@@ -189,7 +237,6 @@
       margin-top: 8px;
     }
 
-    /* LOADING */
     .loading {
       text-align: center;
       color: #444;
@@ -198,7 +245,6 @@
       letter-spacing: 2px;
     }
 
-    /* EMPTY */
     .empty {
       text-align: center;
       color: #444;
@@ -211,17 +257,25 @@
 
 <nav>
   <div class="logo">AQP<span>Gaming</span></div>
-  <ul>
+  <ul id="nav-links">
     <li><a href="index.html">Torneos</a></li>
     <li><a href="equipos.html">Equipos</a></li>
-    <li><a href="registro.html">Registrarse</a></li>
+    <li id="nav-sesion"></li>
   </ul>
 </nav>
 
 <div class="hero">
-  <h1>Liga de <span>eSports</span> Arequipa</h1>
-  <p>Compite. Domina. Gana.</p>
-  <a href="registro.html" class="btn-nuevo">Unirse ahora</a>
+ <div class="video-fondo">
+  <video autoplay muted loop playsinline>
+    <source src="../assets/fondo.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
+</div>
+  <div class="hero-contenido">
+    <h1>Liga de <span>eSports</span> Arequipa</h1>
+    <p>Compite. Domina. Gana.</p>
+    <a href="registro.html" class="btn-nuevo" id="btn-hero">Unirse ahora</a>
+  </div>
 </div>
 
 <div class="contenido">
@@ -233,6 +287,21 @@
 
 <script>
   const API = 'http://127.0.0.1:8000/api';
+
+  function configurarNavbar() {
+    const jugadorData = localStorage.getItem('jugador');
+    const navSesion = document.getElementById('nav-sesion');
+    const btnHero = document.getElementById('btn-hero');
+
+    if (jugadorData) {
+      const jugador = JSON.parse(jugadorData);
+      navSesion.innerHTML = `<a href="perfil.html" class="btn-perfil">👤 ${jugador.gamertag}</a>`;
+      btnHero.textContent = 'Ver torneos';
+      btnHero.href = '#torneos-grid';
+    } else {
+      navSesion.innerHTML = `<a href="login.html" class="btn-perfil">Iniciar sesión</a>`;
+    }
+  }
 
   async function cargarTorneos() {
     const grid = document.getElementById('torneos-grid');
@@ -261,6 +330,7 @@
     }
   }
 
+  configurarNavbar();
   cargarTorneos();
 </script>
 

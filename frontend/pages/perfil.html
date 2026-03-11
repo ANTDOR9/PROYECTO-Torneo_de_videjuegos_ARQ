@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQP Gaming — Perfil</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: #111;
+      border-bottom: 2px solid #cc0000;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav .logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #cc0000;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    nav .logo span { color: #fff; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    nav ul a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: #cc0000; }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid #cc0000;
+      color: #cc0000;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { background: #cc0000; color: #fff; }
+
+    .hero-perfil {
+      background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%);
+      border-bottom: 1px solid #222;
+      padding: 48px 40px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      background: #1a0000;
+      border: 3px solid #cc0000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #cc0000;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .btn-cambiar-foto {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #cc0000;
+      color: #fff;
+      border: none;
+      padding: 4px 10px;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .btn-cambiar-foto:hover { background: #ff0000; }
+
+    .perfil-info { margin-top: 8px; }
+
+    .perfil-info h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .perfil-info .rango {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 12px;
+      background: rgba(204,0,0,0.15);
+      border: 1px solid #cc0000;
+      color: #cc0000;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .perfil-info .nombre-real {
+      color: #555;
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+
+    .contenido {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #222;
+      border-top: 3px solid #cc0000;
+      padding: 28px;
+    }
+
+    .card h3 {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #cc0000;
+      margin-bottom: 20px;
+    }
+
+    .dato {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .dato:last-child { border-bottom: none; }
+
+    .dato .etiqueta {
+      font-size: 0.8rem;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .dato .valor {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .no-data {
+      color: #333;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .msg-foto {
+      font-size: 0.8rem;
+      margin-top: 12px;
+      padding: 8px;
+      text-align: center;
+      display: none;
+    }
+
+    .msg-foto.exito { color: #00c864; }
+    .msg-foto.error { color: #ff4444; }
+
+    .sin-login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .sin-login h2 {
+      font-size: 1.2rem;
+      color: #444;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .sin-login a {
+      padding: 12px 32px;
+      background: #cc0000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AQP<span>Gaming</span></div>
+  <ul>
+    <li><a href="index.html">Torneos</a></li>
+    <li><a href="equipos.html">Equipos</a></li>
+    <li><button class="btn-logout" onclick="cerrarSesion()">Salir</button></li>
+  </ul>
+</nav>
+
+<div id="app"></div>
+<input type="file" id="input-foto" accept="image/*" style="display:none" onchange="subirFoto(this)">
+
+<script>
+  const API = 'http://127.0.0.1:8000/api';
+
+  function cerrarSesion() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('jugador');
+    window.location.href = 'login.html';
+  }
+
+  function abrirSelectorFoto() {
+    document.getElementById('input-foto').click();
+  }
+
+  async function subirFoto(input) {
+    const jugador = JSON.parse(localStorage.getItem('jugador'));
+    const archivo = input.files[0];
+    if (!archivo) return;
+
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    try {
+      const res = await fetch(`${API}/jugadores/${jugador.id}/avatar`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      const msg = document.getElementById('msg-foto');
+      if (data.url) {
+        msg.textContent = '¡Foto actualizada!';
+        msg.className = 'msg-foto exito';
+        msg.style.display = 'block';
+        document.getElementById('img-avatar').src = data.url;
+        setTimeout(() => location.reload(), 1500);
+      }
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  async function cargarPerfil() {
+    const jugadorData = localStorage.getItem('jugador');
+    if (!jugadorData) {
+      document.getElementById('app').innerHTML = `
+        <div class="sin-login">
+          <h2>Debes iniciar sesión para ver tu perfil</h2>
+          <a href="login.html">Iniciar Sesión</a>
+        </div>`;
+      return;
+    }
+
+    const jugador = JSON.parse(jugadorData);
+    const inicial = jugador.gamertag.charAt(0).toUpperCase();
+
+    try {
+      const res = await fetch(`${API}/jugadores`);
+      const jugadores = await res.json();
+      const perfil = jugadores.find(j => j.id === jugador.id);
+
+      const avatarHTML = perfil?.avatar
+        ? `<img id="img-avatar" src="${perfil.avatar}" alt="avatar">`
+        : `<span id="img-avatar">${inicial}</span>`;
+
+      document.getElementById('app').innerHTML = `
+        <div class="hero-perfil">
+          <div class="avatar-wrapper">
+            <div class="avatar">${avatarHTML}</div>
+            <button class="btn-cambiar-foto" onclick="abrirSelectorFoto()">Cambiar foto</button>
+          </div>
+          <div class="perfil-info">
+            <h1>${jugador.gamertag}</h1>
+            ${perfil?.rango ? `<span class="rango">${perfil.rango}</span>` : ''}
+            <p class="nombre-real">${jugador.nombre}</p>
+            <div id="msg-foto" class="msg-foto"></div>
+          </div>
+        </div>
+
+        <div class="contenido">
+          <div class="card">
+            <h3>Información</h3>
+            <div class="dato">
+              <span class="etiqueta">Gamertag</span>
+              <span class="valor">${jugador.gamertag}</span>
+            </div>
+            <div class="dato">
+              <span class="etiqueta">Nombre</span>
+              <span class="valor">${jugador.nombre}</span>
+            </div>
+            <div class="dato">
+              <span class="etiqueta">Rango</span>
+              <span class="valor">${perfil?.rango || 'Sin rango'}</span>
+            </div>
+            <div class="dato">
+              <span class="etiqueta">Miembro desde</span>
+              <span class="valor">${perfil?.fecha_registro || '-'}</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Torneos</h3>
+            <div class="no-data">Próximamente — inscríbete en un torneo</div>
+          </div>
+        </div>
+      `;
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  cargarPerfil();
+</script>
+
+</body>
+</html>
