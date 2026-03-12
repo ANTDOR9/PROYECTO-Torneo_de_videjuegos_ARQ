@@ -6,432 +6,85 @@
   <title>AQP Gaming — Torneo</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: #0a0a0a;
-      color: #fff;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      min-height: 100vh;
-    }
-
-    nav {
-      background: #111;
-      border-bottom: 2px solid #cc0000;
-      padding: 16px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-      z-index: 10;
-    }
-
-    nav .logo {
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: #cc0000;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
+    body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+    nav { background: #111; border-bottom: 2px solid #cc0000; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 10; }
+    nav .logo { font-size: 1.6rem; font-weight: 900; color: #cc0000; letter-spacing: 2px; text-transform: uppercase; }
     nav .logo span { color: #fff; }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-
-    nav ul a {
-      color: #aaa;
-      text-decoration: none;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-
+    nav ul { list-style: none; display: flex; gap: 32px; align-items: center; }
+    nav ul a { color: #aaa; text-decoration: none; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
     nav ul a:hover { color: #cc0000; }
-
-    .btn-perfil {
-      background: transparent;
-      border: 1px solid #cc0000;
-      color: #cc0000;
-      padding: 6px 16px;
-      font-size: 0.8rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-
+    .btn-perfil { background: transparent; border: 1px solid #cc0000; color: #cc0000; padding: 6px 16px; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
     .btn-perfil:hover { background: #cc0000; color: #fff; }
-
-    /* HERO TORNEO */
-    .hero-torneo {
-      background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%);
-      border-bottom: 1px solid #222;
-      padding: 48px 40px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .breadcrumb {
-      font-size: 0.75rem;
-      color: #444;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-
+    .hero-torneo { background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%); border-bottom: 1px solid #222; padding: 48px 40px; max-width: 1100px; margin: 0 auto; }
+    .breadcrumb { font-size: 0.75rem; color: #444; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
     .breadcrumb a { color: #cc0000; text-decoration: none; }
-
-    .hero-torneo h1 {
-      font-size: 2.2rem;
-      font-weight: 900;
-      letter-spacing: 2px;
-      margin-bottom: 12px;
-    }
-
-    .hero-torneo .meta {
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .meta-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .meta-item .label {
-      font-size: 0.7rem;
-      color: #444;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .meta-item .value {
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
+    .hero-torneo h1 { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px; }
+    .hero-torneo .meta { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
+    .meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .meta-item .label { font-size: 0.7rem; color: #444; letter-spacing: 2px; text-transform: uppercase; }
+    .meta-item .value { font-size: 1rem; font-weight: 700; }
     .meta-item .value.premio { color: #ffcc00; }
-
-    .estado {
-      padding: 4px 10px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
+    .estado { padding: 4px 10px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
     .estado-inscripcion { background: rgba(0,200,100,0.15); color: #00c864; }
-    .estado-en-curso    { background: rgba(204,0,0,0.15);   color: #cc0000; }
-    .estado-finalizado  { background: rgba(100,100,100,0.15); color: #666; }
-
-    /* CONTENIDO */
-    .contenido {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid #222;
-      margin-bottom: 32px;
-    }
-
-    .tab {
-      padding: 12px 24px;
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #444;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-    }
-
+    .estado-en-curso { background: rgba(204,0,0,0.15); color: #cc0000; }
+    .estado-finalizado { background: rgba(100,100,100,0.15); color: #666; }
+    .btn-inscribir { padding: 12px 32px; background: #cc0000; color: #fff; border: none; font-size: 0.9rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-inscribir:hover { background: #ff0000; }
+    .contenido { max-width: 1100px; margin: 0 auto; padding: 40px; }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid #222; margin-bottom: 32px; }
+    .tab { padding: 12px 24px; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #444; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
     .tab:hover { color: #fff; }
     .tab.activo { color: #cc0000; border-bottom-color: #cc0000; }
-
     .panel { display: none; }
     .panel.activo { display: block; }
-
-    /* FASES Y BRACKET */
-    .fases-lista {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-
-    .fase-item {
-      background: #111;
-      border: 1px solid #222;
-      border-left: 3px solid #cc0000;
-      padding: 20px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .fase-item .fase-nombre {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .fase-item .fase-formato {
-      font-size: 0.75rem;
-      color: #555;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-
-    .fase-estado {
-      padding: 4px 10px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
+    .fase-item { background: #111; border: 1px solid #222; border-left: 3px solid #cc0000; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .fase-item .fase-nombre { font-weight: 700; font-size: 1rem; }
+    .fase-item .fase-formato { font-size: 0.75rem; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+    .fase-estado { padding: 4px 10px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
     .estado-AC { background: rgba(0,200,100,0.15); color: #00c864; }
     .estado-PE { background: rgba(100,100,100,0.15); color: #666; }
     .estado-FI { background: rgba(204,0,0,0.15); color: #cc0000; }
-
-    /* BRACKET */
-    .bracket {
-      overflow-x: auto;
-      padding-bottom: 20px;
-    }
-
-    .bracket-rondas {
-      display: flex;
-      gap: 48px;
-      align-items: center;
-      min-width: max-content;
-      padding: 20px 0;
-    }
-
-    .ronda {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
-
-    .ronda-titulo {
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #cc0000;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .match {
-      background: #111;
-      border: 1px solid #333;
-      width: 200px;
-      overflow: hidden;
-    }
-
-    .match-equipo {
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-      border-bottom: 1px solid #1a1a1a;
-      transition: background 0.2s;
-    }
-
+    .bracket { overflow-x: auto; padding-bottom: 20px; }
+    .bracket-rondas { display: flex; gap: 48px; align-items: center; min-width: max-content; padding: 20px 0; }
+    .ronda { display: flex; flex-direction: column; gap: 32px; }
+    .ronda-titulo { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: #cc0000; text-align: center; margin-bottom: 8px; }
+    .match { background: #111; border: 1px solid #333; width: 200px; overflow: hidden; }
+    .match-equipo { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; border-bottom: 1px solid #1a1a1a; transition: background 0.2s; }
     .match-equipo:last-child { border-bottom: none; }
     .match-equipo:hover { background: #1a1a1a; }
     .match-equipo.ganador { color: #cc0000; font-weight: 700; }
     .match-equipo .puntaje { color: #555; font-size: 0.8rem; }
-
-    /* INFO */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .card {
-      background: #111;
-      border: 1px solid #222;
-      border-top: 3px solid #cc0000;
-      padding: 24px;
-    }
-
-    .card h3 {
-      font-size: 0.8rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #cc0000;
-      margin-bottom: 16px;
-    }
-
-    .dato {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #1a1a1a;
-      font-size: 0.9rem;
-    }
-
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { background: #111; border: 1px solid #222; border-top: 3px solid #cc0000; padding: 24px; }
+    .card h3 { font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: #cc0000; margin-bottom: 16px; }
+    .dato { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
     .dato:last-child { border-bottom: none; }
     .dato .label { color: #555; }
-
-    .no-data {
-      color: #333;
-      font-size: 0.85rem;
-      text-align: center;
-      padding: 40px;
-      border: 1px dashed #222;
-    }
-
-    .loading {
-      text-align: center;
-      color: #444;
-      padding: 60px;
-    }
-
-    .btn-inscribir {
-        padding: 12px 32px;
-        background: #cc0000;
-        color: #fff;
-        border: none;
-        font-size: 0.9rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-
-      .btn-inscribir:hover { background: #ff0000; }
-
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.85);
-        z-index: 100;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .modal-overlay.visible { display: flex; }
-
-      .modal {
-        background: #111;
-        border: 1px solid #222;
-        border-top: 3px solid #cc0000;
-        padding: 40px;
-        width: 100%;
-        max-width: 460px;
-      }
-
-      .modal h2 {
-        font-size: 1.2rem;
-        font-weight: 900;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        margin-bottom: 24px;
-      }
-
-      .modal h2 span { color: #cc0000; }
-
-      .campo {
-        margin-bottom: 20px;
-      }
-
-      .campo label {
-        display: block;
-        font-size: 0.75rem;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: #666;
-        margin-bottom: 8px;
-      }
-
-      .campo select {
-        width: 100%;
-        background: #0a0a0a;
-        border: 1px solid #333;
-        color: #fff;
-        padding: 12px 16px;
-        font-size: 0.95rem;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-
-      .campo select:focus { border-color: #cc0000; }
-      .campo select option { background: #111; }
-
-      .modal-btns {
-        display: flex;
-        gap: 12px;
-        margin-top: 8px;
-      }
-
-      .btn-submit {
-        flex: 1;
-        padding: 12px;
-        background: #cc0000;
-        color: #fff;
-        border: none;
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-
-      .btn-submit:hover { background: #ff0000; }
-
-      .btn-cancelar {
-        flex: 1;
-        padding: 12px;
-        background: transparent;
-        color: #666;
-        border: 1px solid #333;
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .btn-cancelar:hover { border-color: #666; color: #aaa; }
-
-      .msg-inscripcion {
-        margin-top: 16px;
-        padding: 10px;
-        font-size: 0.85rem;
-        text-align: center;
-        display: none;
-      }
-
-      .msg-inscripcion.error { background: rgba(204,0,0,0.15); color: #ff4444; border: 1px solid #cc0000; }
-      .msg-inscripcion.exito { background: rgba(0,200,100,0.15); color: #00c864; border: 1px solid #00c864; }
-
+    .inscritos-lista { display: flex; flex-direction: column; gap: 8px; }
+    .inscrito-item { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+    .inscrito-tipo { font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; }
+    .tipo-J { background: rgba(0,150,255,0.15); color: #0096ff; }
+    .tipo-E { background: rgba(204,0,0,0.15); color: #cc0000; }
+    .no-data { color: #333; font-size: 0.85rem; text-align: center; padding: 40px; border: 1px dashed #222; }
+    .loading { text-align: center; color: #444; padding: 60px; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; }
+    .modal-overlay.visible { display: flex; }
+    .modal { background: #111; border: 1px solid #222; border-top: 3px solid #cc0000; padding: 40px; width: 100%; max-width: 460px; }
+    .modal h2 { font-size: 1.2rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 24px; }
+    .modal h2 span { color: #cc0000; }
+    .campo { margin-bottom: 20px; }
+    .campo label { display: block; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #666; margin-bottom: 8px; }
+    .campo select { width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 12px 16px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+    .campo select:focus { border-color: #cc0000; }
+    .campo select option { background: #111; }
+    .modal-btns { display: flex; gap: 12px; margin-top: 8px; }
+    .btn-submit { flex: 1; padding: 12px; background: #cc0000; color: #fff; border: none; font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-submit:hover { background: #ff0000; }
+    .btn-cancelar { flex: 1; padding: 12px; background: transparent; color: #666; border: 1px solid #333; font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-cancelar:hover { border-color: #666; color: #aaa; }
+    .msg-inscripcion { margin-top: 16px; padding: 10px; font-size: 0.85rem; text-align: center; display: none; }
+    .msg-inscripcion.error { background: rgba(204,0,0,0.15); color: #ff4444; border: 1px solid #cc0000; }
+    .msg-inscripcion.exito { background: rgba(0,200,100,0.15); color: #00c864; border: 1px solid #00c864; }
   </style>
 </head>
 <body>
@@ -449,8 +102,31 @@
   <div class="loading">Cargando torneo...</div>
 </div>
 
+<!-- MODAL INSCRIPCION -->
+<div class="modal-overlay" id="modal-inscripcion">
+  <div class="modal">
+    <h2>Inscribirse al <span>Torneo</span></h2>
+    <div class="campo">
+      <label>Tipo de inscripción</label>
+      <select id="tipo-inscripcion" onchange="cambiarTipo()">
+        <option value="J">Individual</option>
+        <option value="E">Con mi equipo</option>
+      </select>
+    </div>
+    <div class="campo" id="campo-equipo" style="display:none">
+      <label>Selecciona tu equipo</label>
+      <select id="select-equipo"></select>
+    </div>
+    <div class="msg-inscripcion" id="msg-inscripcion"></div>
+    <div class="modal-btns">
+      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-submit" onclick="inscribirse()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  const API = 'http://127.0.0.1:8000/api';
+  const API = 'https://proyecto-torneodevidejuegosarq-production.up.railway.app/api';
 
   function configurarNavbar() {
     const jugadorData = localStorage.getItem('jugador');
@@ -470,221 +146,10 @@
     document.getElementById(`panel-${tab}`).classList.add('activo');
   }
 
-  function renderBracket(fases) {
-    if (fases.length === 0) {
-      return '<div class="no-data">No hay fases registradas aún.</div>';
-    }
-
-    const fasesHTML = fases.map(f => `
-      <div class="fase-item">
-        <div>
-          <div class="fase-nombre">${f.nombre}</div>
-          <div class="fase-formato">${f.tipo_formato}</div>
-        </div>
-        <span class="fase-estado estado-${f.estado}">${
-          f.estado === 'AC' ? 'Activa' :
-          f.estado === 'PE' ? 'Pendiente' : 'Finalizada'
-        }</span>
-      </div>
-    `).join('');
-
-    const bracketHTML = `
-      <div class="bracket">
-        <div class="bracket-rondas">
-          <div class="ronda">
-            <div class="ronda-titulo">Cuartos de Final</div>
-            ${[1,2,3,4].map(() => `
-              <div class="match">
-                <div class="match-equipo">
-                  <span>TBD</span>
-                  <span class="puntaje">-</span>
-                </div>
-                <div class="match-equipo">
-                  <span>TBD</span>
-                  <span class="puntaje">-</span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="ronda">
-            <div class="ronda-titulo">Semifinal</div>
-            ${[1,2].map(() => `
-              <div class="match">
-                <div class="match-equipo">
-                  <span>TBD</span>
-                  <span class="puntaje">-</span>
-                </div>
-                <div class="match-equipo">
-                  <span>TBD</span>
-                  <span class="puntaje">-</span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="ronda">
-            <div class="ronda-titulo">Final</div>
-            <div class="match">
-              <div class="match-equipo">
-                <span>TBD</span>
-                <span class="puntaje">-</span>
-              </div>
-              <div class="match-equipo">
-                <span>TBD</span>
-                <span class="puntaje">-</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    return fasesHTML + '<br>' + bracketHTML;
+  function cambiarTipo() {
+    const tipo = document.getElementById('tipo-inscripcion').value;
+    document.getElementById('campo-equipo').style.display = tipo === 'E' ? 'block' : 'none';
   }
-
-  async function cargarTorneo() {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-
-    if (!id) {
-      window.location.href = 'index.html';
-      return;
-    }
-
-    try {
-      const [resTorneo, resFases] = await Promise.all([
-        fetch(`${API}/torneos/${id}`),
-        fetch(`${API}/torneos/${id}/fases`)
-      ]);
-
-      const torneo = await resTorneo.json();
-      const fases = await resFases.json();
-
-      if (torneo.error) {
-        window.location.href = 'index.html';
-        return;
-      }
-
-      const estadoClase = `estado-${torneo.estado.toLowerCase().replace(' ', '-')}`;
-
-      document.title = `AQP Gaming — ${torneo.nombre}`;
-
-      document.getElementById('app').innerHTML = `
-        <div class="hero-torneo">
-          <div class="breadcrumb">
-            <a href="index.html">Torneos</a> / ${torneo.nombre}
-          </div>
-          <h1>${torneo.nombre}</h1>
-          <div class="meta">
-            <div class="meta-item">
-              <span class="label">Videojuego</span>
-              <span class="value">${torneo.videojuego}</span>
-            </div>
-            <div class="meta-item">
-              <span class="label">Fecha inicio</span>
-              <span class="value">📅 ${torneo.fecha_inicio}</span>
-            </div>
-            ${torneo.premio_total ? `
-            <div class="meta-item">
-              <span class="label">Premio total</span>
-              <span class="value premio">S/ ${torneo.premio_total.toFixed(2)}</span>
-            </div>` : ''}
-            <div class="meta-item">
-              <span class="label">Estado</span>
-              <span class="value"><span class="estado ${estadoClase}">${torneo.estado}</span></span>
-            </div>
-          </div>
-          ${torneo.estado === 'Inscripcion' ? `
-          <div style="margin-top:24px;">
-            <button class="btn-inscribir" onclick="abrirModalInscripcion()">🎮 Inscribirse al torneo</button>
-          </div>` : ''}
-        </div>
-
-        <div class="contenido">
-          <div class="tabs">
-            <button class="tab activo" data-tab="bracket" onclick="cambiarTab('bracket')">Bracket</button>
-            <button class="tab" data-tab="info" onclick="cambiarTab('info')">Información</button>
-          </div>
-
-          <div class="panel activo" id="panel-bracket">
-            ${renderBracket(fases)}
-          </div>
-
-          <div class="panel" id="panel-info">
-            <div class="info-grid">
-              <div class="card">
-                <h3>Detalles</h3>
-                <div class="dato">
-                  <span class="label">Nombre</span>
-                  <span>${torneo.nombre}</span>
-                </div>
-                <div class="dato">
-                  <span class="label">Videojuego</span>
-                  <span>${torneo.videojuego}</span>
-                </div>
-                <div class="dato">
-                  <span class="label">Fecha inicio</span>
-                  <span>${torneo.fecha_inicio}</span>
-                </div>
-                <div class="dato">
-                  <span class="label">Estado</span>
-                  <span>${torneo.estado}</span>
-                </div>
-                ${torneo.premio_total ? `
-                <div class="dato">
-                  <span class="label">Premio total</span>
-                  <span style="color:#ffcc00">S/ ${torneo.premio_total.toFixed(2)}</span>
-                </div>` : ''}
-              </div>
-              <div class="card">
-                <h3>Descripción</h3>
-                <p style="color:#666; font-size:0.9rem; line-height:1.6">
-                  ${torneo.descripcion || 'Sin descripción disponible.'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    } catch(e) {
-      document.getElementById('app').innerHTML = '<div class="loading">Error al cargar el torneo.</div>';
-    }
-  }
-
-  configurarNavbar();
-  cargarTorneo();
-</script>
-
-
-
-<!-- MODAL INSCRIPCION -->
-<div class="modal-overlay" id="modal-inscripcion">
-  <div class="modal">
-    <h2>Inscribirse al <span>Torneo</span></h2>
-
-    <div class="campo">
-      <label>Tipo de inscripción</label>
-      <select id="tipo-inscripcion" onchange="cambiarTipo()">
-        <option value="J">Individual</option>
-        <option value="E">Con mi equipo</option>
-      </select>
-    </div>
-
-    <div class="campo" id="campo-equipo" style="display:none">
-      <label>Selecciona tu equipo</label>
-      <select id="select-equipo"></select>
-    </div>
-
-    <div class="msg-inscripcion" id="msg-inscripcion"></div>
-
-    <div class="modal-btns">
-      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-submit" onclick="inscribirse()">Confirmar</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  // Agrega estas funciones al script existente
 
   function abrirModalInscripcion() {
     const jugadorData = localStorage.getItem('jugador');
@@ -695,11 +160,6 @@
 
   function cerrarModal() {
     document.getElementById('modal-inscripcion').classList.remove('visible');
-  }
-
-  function cambiarTipo() {
-    const tipo = document.getElementById('tipo-inscripcion').value;
-    document.getElementById('campo-equipo').style.display = tipo === 'E' ? 'block' : 'none';
   }
 
   async function cargarMisEquipos() {
@@ -760,7 +220,7 @@
       msg.textContent = '¡Inscripción exitosa!';
       msg.className = 'msg-inscripcion exito';
       msg.style.display = 'block';
-      setTimeout(() => cerrarModal(), 2000);
+      setTimeout(() => { cerrarModal(); cargarTorneo(); }, 2000);
 
     } catch(err) {
       msg.textContent = 'Error al conectar con el servidor';
@@ -768,6 +228,173 @@
       msg.style.display = 'block';
     }
   }
+
+  function renderBracket(fases) {
+    if (fases.length === 0) {
+      return '<div class="no-data">No hay fases registradas aún.</div>';
+    }
+
+    const fasesHTML = fases.map(f => `
+      <div class="fase-item">
+        <div>
+          <div class="fase-nombre">${f.nombre}</div>
+          <div class="fase-formato">${f.tipo_formato}</div>
+        </div>
+        <span class="fase-estado estado-${f.estado}">${
+          f.estado === 'AC' ? 'Activa' :
+          f.estado === 'PE' ? 'Pendiente' : 'Finalizada'
+        }</span>
+      </div>
+    `).join('');
+
+    const bracketHTML = `
+      <div class="bracket">
+        <div class="bracket-rondas">
+          <div class="ronda">
+            <div class="ronda-titulo">Cuartos de Final</div>
+            ${[1,2,3,4].map(() => `
+              <div class="match">
+                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
+                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="ronda">
+            <div class="ronda-titulo">Semifinal</div>
+            ${[1,2].map(() => `
+              <div class="match">
+                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
+                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="ronda">
+            <div class="ronda-titulo">Final</div>
+            <div class="match">
+              <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
+              <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return fasesHTML + '<br>' + bracketHTML;
+  }
+
+  async function cargarTorneo() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    if (!id) { window.location.href = 'index.html'; return; }
+
+    try {
+      const [resTorneo, resFases, resInscritos] = await Promise.all([
+        fetch(`${API}/torneos/${id}`),
+        fetch(`${API}/torneos/${id}/fases`),
+        fetch(`${API}/torneos/${id}/inscripciones`)
+      ]);
+
+      const torneo = await resTorneo.json();
+      const fases = await resFases.json();
+      const inscritos = await resInscritos.json();
+
+      if (torneo.error) { window.location.href = 'index.html'; return; }
+
+      const estadoClase = `estado-${torneo.estado.toLowerCase().replace(' ', '-')}`;
+      document.title = `AQP Gaming — ${torneo.nombre}`;
+
+      const inscritosHTML = inscritos.length === 0
+        ? '<div class="no-data">No hay inscritos aún.</div>'
+        : `<div class="inscritos-lista">${inscritos.map(i => `
+            <div class="inscrito-item">
+              <span>${i.nombre}</span>
+              <span class="inscrito-tipo tipo-${i.tipo}">${i.tipo === 'J' ? 'Individual' : 'Equipo'}</span>
+            </div>
+          `).join('')}</div>`;
+
+      document.getElementById('app').innerHTML = `
+        <div class="hero-torneo">
+          <div class="breadcrumb">
+            <a href="index.html">Torneos</a> / ${torneo.nombre}
+          </div>
+          <h1>${torneo.nombre}</h1>
+          <div class="meta">
+            <div class="meta-item">
+              <span class="label">Videojuego</span>
+              <span class="value">${torneo.videojuego}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Fecha inicio</span>
+              <span class="value">📅 ${torneo.fecha_inicio}</span>
+            </div>
+            ${torneo.premio_total ? `
+            <div class="meta-item">
+              <span class="label">Premio total</span>
+              <span class="value premio">S/ ${torneo.premio_total.toFixed(2)}</span>
+            </div>` : ''}
+            <div class="meta-item">
+              <span class="label">Inscritos</span>
+              <span class="value">${inscritos.length}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Estado</span>
+              <span class="value"><span class="estado ${estadoClase}">${torneo.estado}</span></span>
+            </div>
+          </div>
+          ${torneo.estado === 'Inscripcion' ? `
+          <div style="margin-top:24px;">
+            <button class="btn-inscribir" onclick="abrirModalInscripcion()">🎮 Inscribirse al torneo</button>
+          </div>` : ''}
+        </div>
+
+        <div class="contenido">
+          <div class="tabs">
+            <button class="tab activo" data-tab="bracket" onclick="cambiarTab('bracket')">Bracket</button>
+            <button class="tab" data-tab="inscritos" onclick="cambiarTab('inscritos')">Inscritos (${inscritos.length})</button>
+            <button class="tab" data-tab="info" onclick="cambiarTab('info')">Información</button>
+          </div>
+
+          <div class="panel activo" id="panel-bracket">
+            ${renderBracket(fases)}
+          </div>
+
+          <div class="panel" id="panel-inscritos">
+            ${inscritosHTML}
+          </div>
+
+          <div class="panel" id="panel-info">
+            <div class="info-grid">
+              <div class="card">
+                <h3>Detalles</h3>
+                <div class="dato"><span class="label">Nombre</span><span>${torneo.nombre}</span></div>
+                <div class="dato"><span class="label">Videojuego</span><span>${torneo.videojuego}</span></div>
+                <div class="dato"><span class="label">Fecha inicio</span><span>${torneo.fecha_inicio}</span></div>
+                <div class="dato"><span class="label">Estado</span><span>${torneo.estado}</span></div>
+                ${torneo.premio_total ? `
+                <div class="dato">
+                  <span class="label">Premio total</span>
+                  <span style="color:#ffcc00">S/ ${torneo.premio_total.toFixed(2)}</span>
+                </div>` : ''}
+              </div>
+              <div class="card">
+                <h3>Descripción</h3>
+                <p style="color:#666; font-size:0.9rem; line-height:1.6">
+                  ${torneo.descripcion || 'Sin descripción disponible.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } catch(e) {
+      document.getElementById('app').innerHTML = '<div class="loading">Error al cargar el torneo.</div>';
+    }
+  }
+
+  configurarNavbar();
+  cargarTorneo();
 </script>
+
 </body>
 </html>
