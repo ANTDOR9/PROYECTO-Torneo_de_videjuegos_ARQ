@@ -58,3 +58,33 @@ def crear_jugador(datos: dict):
         cursor.close()
         conn.close()
         return {"error": str(e)}
+    
+@router.get("/jugadores/{id_jugador}/torneos")
+def torneos_jugador(id_jugador: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT t.id_torneo, t.nombre, t.estado, t.fecha_inicio,
+               v.nombre as videojuego, i.fecha_inscripcion
+        FROM inscripcion i
+        JOIN torneo t ON i.id_torneo = t.id_torneo
+        JOIN videojuego v ON t.id_videojuego = v.id_videojuego
+        JOIN participante p ON i.id_participante = p.id_participante
+        JOIN jugador j ON j.id_participante = p.id_participante
+        WHERE j.id_jugador = %s
+        ORDER BY i.fecha_inscripcion DESC
+    """, (id_jugador,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return [
+        {
+            "id": r[0],
+            "nombre": r[1],
+            "estado": r[2],
+            "fecha_inicio": str(r[3]),
+            "videojuego": r[4],
+            "fecha_inscripcion": str(r[5])
+        }
+        for r in rows
+    ]

@@ -351,10 +351,11 @@
             </div>
           </div>
 
-          <div class="card">
-            <h3>Torneos</h3>
-            <div class="no-data">Próximamente — inscríbete en un torneo</div>
-          </div>
+        <div class="card">
+          <h3>Torneos</h3>
+          <div id="historial-torneos"><div class="no-data">Cargando...</div></div>
+        </div>
+
         </div>
       `;
     } catch(e) {
@@ -363,6 +364,39 @@
   }
 
   cargarPerfil();
+
+
+    async function cargarHistorial() {
+      const jugadorData = localStorage.getItem('jugador');
+      if (!jugadorData) return;
+      const jugador = JSON.parse(jugadorData);
+
+      try {
+        const res = await fetch(`${API}/jugadores/${jugador.id}/torneos`);
+        const torneos = await res.json();
+        const contenedor = document.getElementById('historial-torneos');
+
+        if (!contenedor) return;
+
+        if (!torneos || torneos.length === 0) {
+          contenedor.innerHTML = '<div class="no-data">No estás inscrito en ningún torneo aún.</div>';
+          return;
+        }
+
+        contenedor.innerHTML = torneos.map(t => `
+          <div class="dato">
+            <span class="etiqueta">${t.nombre}</span>
+            <span class="valor" style="font-size:0.8rem; color:${t.estado === 'Inscripcion' ? '#00c864' : '#666'}">${t.estado}</span>
+          </div>
+        `).join('');
+      } catch(e) {
+        console.error(e);
+      }
+    }
+
+    cargarHistorial();
+</script>
+
 </script>
 
 </body>
