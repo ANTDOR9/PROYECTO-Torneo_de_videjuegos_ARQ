@@ -88,6 +88,8 @@
 
     .hero h1 span { color: #cc0000; }
 
+    .hero-btns { display: flex; gap: 12px; }
+
     .btn-crear {
       padding: 12px 28px;
       background: #cc0000;
@@ -102,6 +104,21 @@
     }
 
     .btn-crear:hover { background: #ff0000; }
+
+    .btn-unirse {
+      padding: 12px 28px;
+      background: transparent;
+      color: #cc0000;
+      border: 1px solid #cc0000;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-unirse:hover { background: #cc0000; color: #fff; }
 
     .contenido {
       max-width: 1100px;
@@ -139,13 +156,10 @@
       border: 1px solid #222;
       border-top: 3px solid #cc0000;
       padding: 24px;
-      transition: transform 0.2s, border-color 0.2s;
+      transition: transform 0.2s;
     }
 
-    .equipo-card:hover {
-      transform: translateY(-3px);
-      border-color: #cc0000;
-    }
+    .equipo-card:hover { transform: translateY(-3px); }
 
     .equipo-card .juego {
       font-size: 0.7rem;
@@ -161,17 +175,33 @@
       margin-bottom: 12px;
     }
 
-    .equipo-card .capitan {
+    .equipo-card .info {
       font-size: 0.85rem;
       color: #666;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
-    .equipo-card .capitan span { color: #aaa; }
+    .equipo-card .info span { color: #aaa; }
+
+    .codigo-badge {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 12px;
+      background: rgba(204,0,0,0.1);
+      border: 1px dashed #cc0000;
+      color: #cc0000;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .codigo-badge:hover { background: rgba(204,0,0,0.2); }
 
     .estado {
       display: inline-block;
-      margin-top: 12px;
+      margin-top: 10px;
       padding: 4px 10px;
       font-size: 0.7rem;
       font-weight: 700;
@@ -294,6 +324,36 @@
     .mensaje.error { background: rgba(204,0,0,0.15); color: #ff4444; border: 1px solid #cc0000; }
     .mensaje.exito { background: rgba(0,200,100,0.15); color: #00c864; border: 1px solid #00c864; }
 
+    .codigo-generado {
+      text-align: center;
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(204,0,0,0.1);
+      border: 1px dashed #cc0000;
+      display: none;
+    }
+
+    .codigo-generado .label {
+      font-size: 0.75rem;
+      color: #666;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .codigo-generado .codigo {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #cc0000;
+      letter-spacing: 6px;
+    }
+
+    .codigo-generado .aviso {
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 8px;
+    }
+
     .loading {
       text-align: center;
       color: #444;
@@ -327,7 +387,10 @@
       <h1>Equipos <span>Registrados</span></h1>
       <p style="color:#555; margin-top:8px; font-size:0.9rem;">Organizaciones compitiendo en AQP Gaming</p>
     </div>
-    <button class="btn-crear" onclick="abrirModal()">+ Crear Equipo</button>
+    <div class="hero-btns">
+      <button class="btn-unirse" onclick="abrirModalUnirse()">Unirse con código</button>
+      <button class="btn-crear" onclick="abrirModalCrear()">+ Crear Equipo</button>
+    </div>
   </div>
 </div>
 
@@ -339,7 +402,7 @@
 </div>
 
 <!-- MODAL CREAR EQUIPO -->
-<div class="modal-overlay" id="modal">
+<div class="modal-overlay" id="modal-crear">
   <div class="modal">
     <h2>Crear <span>Equipo</span></h2>
 
@@ -353,11 +416,36 @@
       <select id="videojuego-equipo"></select>
     </div>
 
-    <div class="mensaje" id="msg-equipo"></div>
+    <div class="codigo-generado" id="codigo-generado">
+      <div class="label">Código de invitación</div>
+      <div class="codigo" id="codigo-texto"></div>
+      <div class="aviso">Comparte este código con tus compañeros para que se unan</div>
+    </div>
+
+    <div class="mensaje" id="msg-crear"></div>
 
     <div class="modal-btns">
-      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-submit" onclick="crearEquipo()">Crear</button>
+      <button class="btn-cancelar" onclick="cerrarModales()">Cerrar</button>
+      <button class="btn-submit" id="btn-crear-submit" onclick="crearEquipo()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL UNIRSE -->
+<div class="modal-overlay" id="modal-unirse">
+  <div class="modal">
+    <h2>Unirse a un <span>Equipo</span></h2>
+
+    <div class="campo">
+      <label>Código de invitación</label>
+      <input type="text" id="codigo-input" placeholder="AQP-XXXX" style="text-transform:uppercase; letter-spacing:3px;">
+    </div>
+
+    <div class="mensaje" id="msg-unirse"></div>
+
+    <div class="modal-btns">
+      <button class="btn-cancelar" onclick="cerrarModales()">Cancelar</button>
+      <button class="btn-submit" onclick="unirseEquipo()">Unirse</button>
     </div>
   </div>
 </div>
@@ -387,13 +475,21 @@
         return;
       }
 
+      const jugadorData = localStorage.getItem('jugador');
+      const jugador = jugadorData ? JSON.parse(jugadorData) : null;
+
       grid.innerHTML = equipos.map(e => `
         <div class="equipo-card">
           <div class="juego">${e.videojuego}</div>
           <h3>${e.nombre}</h3>
-          <div class="capitan">Capitán: <span>${e.capitan}</span></div>
-          ${e.fecha_creacion ? `<div class="capitan">Fundado: <span>${e.fecha_creacion}</span></div>` : ''}
+          <div class="info">Capitán: <span>${e.capitan}</span></div>
+          ${e.fecha_creacion ? `<div class="info">Fundado: <span>${e.fecha_creacion}</span></div>` : ''}
           <span class="estado activo-${e.activo}">${e.activo === 'S' ? 'Activo' : 'Inactivo'}</span>
+          ${jugador && e.capitan === jugador.gamertag && e.codigo_invitacion ? `
+            <div class="codigo-badge" onclick="copiarCodigo('${e.codigo_invitacion}')" title="Clic para copiar">
+              🔑 ${e.codigo_invitacion}
+            </div>
+          ` : ''}
         </div>
       `).join('');
     } catch(e) {
@@ -401,12 +497,14 @@
     }
   }
 
-  async function abrirModal() {
+  function copiarCodigo(codigo) {
+    navigator.clipboard.writeText(codigo);
+    alert(`Código copiado: ${codigo}`);
+  }
+
+  async function abrirModalCrear() {
     const jugadorData = localStorage.getItem('jugador');
-    if (!jugadorData) {
-      window.location.href = 'login.html';
-      return;
-    }
+    if (!jugadorData) { window.location.href = 'login.html'; return; }
 
     const select = document.getElementById('videojuego-equipo');
     if (select.options.length === 0) {
@@ -420,18 +518,30 @@
       });
     }
 
-    document.getElementById('modal').classList.add('visible');
+    document.getElementById('codigo-generado').style.display = 'none';
+    document.getElementById('btn-crear-submit').style.display = 'block';
+    document.getElementById('modal-crear').classList.add('visible');
   }
 
-  function cerrarModal() {
-    document.getElementById('modal').classList.remove('visible');
+  function abrirModalUnirse() {
+    const jugadorData = localStorage.getItem('jugador');
+    if (!jugadorData) { window.location.href = 'login.html'; return; }
+    document.getElementById('modal-unirse').classList.add('visible');
+  }
+
+  function cerrarModales() {
+    document.getElementById('modal-crear').classList.remove('visible');
+    document.getElementById('modal-unirse').classList.remove('visible');
+    document.getElementById('nombre-equipo').value = '';
+    document.getElementById('codigo-input').value = '';
+    cargarEquipos();
   }
 
   async function crearEquipo() {
     const jugador = JSON.parse(localStorage.getItem('jugador'));
     const nombre = document.getElementById('nombre-equipo').value;
     const id_videojuego = parseInt(document.getElementById('videojuego-equipo').value);
-    const msg = document.getElementById('msg-equipo');
+    const msg = document.getElementById('msg-crear');
 
     if (!nombre) {
       msg.textContent = 'Escribe el nombre del equipo';
@@ -444,11 +554,7 @@
       const res = await fetch(`${API}/equipos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre,
-          id_videojuego,
-          id_capitan: jugador.id
-        })
+        body: JSON.stringify({ nombre, id_videojuego, id_capitan: jugador.id })
       });
 
       const data = await res.json();
@@ -460,14 +566,53 @@
         return;
       }
 
-      msg.textContent = '¡Equipo creado exitosamente!';
+      document.getElementById('codigo-texto').textContent = data.codigo_invitacion;
+      document.getElementById('codigo-generado').style.display = 'block';
+      document.getElementById('btn-crear-submit').style.display = 'none';
+      msg.textContent = '¡Equipo creado! Comparte el código con tus compañeros.';
       msg.className = 'mensaje exito';
       msg.style.display = 'block';
 
-      setTimeout(() => {
-        cerrarModal();
-        cargarEquipos();
-      }, 1500);
+    } catch(e) {
+      msg.textContent = 'Error al conectar con el servidor';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+    }
+  }
+
+  async function unirseEquipo() {
+    const jugador = JSON.parse(localStorage.getItem('jugador'));
+    const codigo = document.getElementById('codigo-input').value.toUpperCase();
+    const msg = document.getElementById('msg-unirse');
+
+    if (!codigo) {
+      msg.textContent = 'Ingresa el código de invitación';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/equipos/unirse`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo, id_jugador: jugador.id })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        msg.textContent = data.error;
+        msg.className = 'mensaje error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      msg.textContent = '¡Te uniste al equipo exitosamente!';
+      msg.className = 'mensaje exito';
+      msg.style.display = 'block';
+
+      setTimeout(() => cerrarModales(), 2000);
 
     } catch(e) {
       msg.textContent = 'Error al conectar con el servidor';
