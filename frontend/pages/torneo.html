@@ -308,6 +308,130 @@
       color: #444;
       padding: 60px;
     }
+
+    .btn-inscribir {
+        padding: 12px 32px;
+        background: #cc0000;
+        color: #fff;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .btn-inscribir:hover { background: #ff0000; }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-overlay.visible { display: flex; }
+
+      .modal {
+        background: #111;
+        border: 1px solid #222;
+        border-top: 3px solid #cc0000;
+        padding: 40px;
+        width: 100%;
+        max-width: 460px;
+      }
+
+      .modal h2 {
+        font-size: 1.2rem;
+        font-weight: 900;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+      }
+
+      .modal h2 span { color: #cc0000; }
+
+      .campo {
+        margin-bottom: 20px;
+      }
+
+      .campo label {
+        display: block;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #666;
+        margin-bottom: 8px;
+      }
+
+      .campo select {
+        width: 100%;
+        background: #0a0a0a;
+        border: 1px solid #333;
+        color: #fff;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .campo select:focus { border-color: #cc0000; }
+      .campo select option { background: #111; }
+
+      .modal-btns {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      .btn-submit {
+        flex: 1;
+        padding: 12px;
+        background: #cc0000;
+        color: #fff;
+        border: none;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .btn-submit:hover { background: #ff0000; }
+
+      .btn-cancelar {
+        flex: 1;
+        padding: 12px;
+        background: transparent;
+        color: #666;
+        border: 1px solid #333;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .btn-cancelar:hover { border-color: #666; color: #aaa; }
+
+      .msg-inscripcion {
+        margin-top: 16px;
+        padding: 10px;
+        font-size: 0.85rem;
+        text-align: center;
+        display: none;
+      }
+
+      .msg-inscripcion.error { background: rgba(204,0,0,0.15); color: #ff4444; border: 1px solid #cc0000; }
+      .msg-inscripcion.exito { background: rgba(0,200,100,0.15); color: #00c864; border: 1px solid #00c864; }
+
   </style>
 </head>
 <body>
@@ -469,6 +593,10 @@
               <span class="value"><span class="estado ${estadoClase}">${torneo.estado}</span></span>
             </div>
           </div>
+          ${torneo.estado === 'Inscripcion' ? `
+          <div style="margin-top:24px;">
+            <button class="btn-inscribir" onclick="abrirModalInscripcion()">🎮 Inscribirse al torneo</button>
+          </div>` : ''}
         </div>
 
         <div class="contenido">
@@ -526,5 +654,120 @@
   cargarTorneo();
 </script>
 
+
+
+<!-- MODAL INSCRIPCION -->
+<div class="modal-overlay" id="modal-inscripcion">
+  <div class="modal">
+    <h2>Inscribirse al <span>Torneo</span></h2>
+
+    <div class="campo">
+      <label>Tipo de inscripción</label>
+      <select id="tipo-inscripcion" onchange="cambiarTipo()">
+        <option value="J">Individual</option>
+        <option value="E">Con mi equipo</option>
+      </select>
+    </div>
+
+    <div class="campo" id="campo-equipo" style="display:none">
+      <label>Selecciona tu equipo</label>
+      <select id="select-equipo"></select>
+    </div>
+
+    <div class="msg-inscripcion" id="msg-inscripcion"></div>
+
+    <div class="modal-btns">
+      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-submit" onclick="inscribirse()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Agrega estas funciones al script existente
+
+  function abrirModalInscripcion() {
+    const jugadorData = localStorage.getItem('jugador');
+    if (!jugadorData) { window.location.href = 'login.html'; return; }
+    cargarMisEquipos();
+    document.getElementById('modal-inscripcion').classList.add('visible');
+  }
+
+  function cerrarModal() {
+    document.getElementById('modal-inscripcion').classList.remove('visible');
+  }
+
+  function cambiarTipo() {
+    const tipo = document.getElementById('tipo-inscripcion').value;
+    document.getElementById('campo-equipo').style.display = tipo === 'E' ? 'block' : 'none';
+  }
+
+  async function cargarMisEquipos() {
+    const jugador = JSON.parse(localStorage.getItem('jugador'));
+    const select = document.getElementById('select-equipo');
+    select.innerHTML = '';
+    try {
+      const res = await fetch(`${API}/equipos`);
+      const equipos = await res.json();
+      const misEquipos = equipos.filter(e => e.capitan === jugador.gamertag);
+      if (misEquipos.length === 0) {
+        select.innerHTML = '<option value="">No tienes equipos como capitán</option>';
+      } else {
+        misEquipos.forEach(e => {
+          const opt = document.createElement('option');
+          opt.value = e.id;
+          opt.textContent = e.nombre;
+          select.appendChild(opt);
+        });
+      }
+    } catch(err) { console.error(err); }
+  }
+
+  async function inscribirse() {
+    const jugador = JSON.parse(localStorage.getItem('jugador'));
+    const tipo = document.getElementById('tipo-inscripcion').value;
+    const params = new URLSearchParams(window.location.search);
+    const id_torneo = parseInt(params.get('id'));
+    const msg = document.getElementById('msg-inscripcion');
+
+    const body = { tipo, id_jugador: jugador.id };
+    if (tipo === 'E') {
+      const id_equipo = parseInt(document.getElementById('select-equipo').value);
+      if (!id_equipo) {
+        msg.textContent = 'Necesitas un equipo del que seas capitán';
+        msg.className = 'msg-inscripcion error';
+        msg.style.display = 'block';
+        return;
+      }
+      body.id_equipo = id_equipo;
+    }
+
+    try {
+      const res = await fetch(`${API}/torneos/${id_torneo}/inscribir`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        msg.textContent = data.error;
+        msg.className = 'msg-inscripcion error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      msg.textContent = '¡Inscripción exitosa!';
+      msg.className = 'msg-inscripcion exito';
+      msg.style.display = 'block';
+      setTimeout(() => cerrarModal(), 2000);
+
+    } catch(err) {
+      msg.textContent = 'Error al conectar con el servidor';
+      msg.className = 'msg-inscripcion error';
+      msg.style.display = 'block';
+    }
+  }
+</script>
 </body>
 </html>
