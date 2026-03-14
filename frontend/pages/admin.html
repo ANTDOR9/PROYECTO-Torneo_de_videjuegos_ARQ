@@ -488,7 +488,7 @@
                   <td>${p.estado}</td>
                   <td>
                     ${p.estado !== 'Finalizada' ? `
-                      <button class="btn-secondary" onclick="abrirResultado(${p.id}, '${p.participante1.nombre}', '${p.participante2.nombre}')">
+                      <button class="btn-secondary" onclick="abrirResultado(${p.id}, ${p.participante1.id}, ${p.participante2.id}, '${p.participante1.nombre}', '${p.participante2.nombre}')">
                         Registrar resultado
                       </button>` : '<span style="color:#00c864">✓ Finalizada</span>'}
                   </td>
@@ -544,25 +544,24 @@
     }
   }
 
-  function abrirResultado(idPartida, nombre1, nombre2) {
-    const res1 = prompt(`Resultado de ${nombre1}:`);
-    if (res1 === null) return;
-    const res2 = prompt(`Resultado de ${nombre2}:`);
-    if (res2 === null) return;
-    const ganador = parseInt(res1) > parseInt(res2) ? 1 : 2;
+function abrirResultado(idPartida, idPart1, idPart2, nombre1, nombre2) {
+  const p1 = prompt(`Puntaje de ${nombre1}:`);
+  if (p1 === null) return;
+  const p2 = prompt(`Puntaje de ${nombre2}:`);
+  if (p2 === null) return;
+  const ganador1 = parseInt(p1) > parseInt(p2) ? 1 : 2;
 
-    fetch(`${API}/partidas/${idPartida}/resultado`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        resultados: [
-          { id_participante: null, resultado: parseInt(res1), ganador: ganador === 1 },
-          { id_participante: null, resultado: parseInt(res2), ganador: ganador === 2 }
-        ]
-      })
-    }).then(() => cargarBracketAdmin());
-  }
-
+  fetch(`${API}/partidas/${idPartida}/resultado`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      resultados: [
+        { id_participante: idPart1, puntaje: parseInt(p1), puesto: ganador1 === 1 ? 1 : 2 },
+        { id_participante: idPart2, puntaje: parseInt(p2), puesto: ganador1 === 2 ? 1 : 2 }
+      ]
+    })
+  }).then(() => cargarBracketAdmin());
+}
 
 
 

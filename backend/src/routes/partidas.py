@@ -21,22 +21,20 @@ def listar_partidas(id_fase: int):
                  WHEN e2.nombre IS NOT NULL THEN e2.nombre
                  ELSE 'TBD'
                END as nombre2,
-               pp1.resultado as resultado1,
-               pp2.resultado as resultado2,
-               pp1.es_ganador as ganador1,
-               pp2.es_ganador as ganador2
+               pp1.puntaje as puntaje1,
+               pp2.puntaje as puntaje2,
+               pp1.puesto_obtenido as puesto1,
+               pp2.puesto_obtenido as puesto2
         FROM partida p
         LEFT JOIN partida_participante pp1 ON pp1.id_partida = p.id_partida
         LEFT JOIN partida_participante pp2 ON pp2.id_partida = p.id_partida 
-            AND pp2.id_participante != pp1.id_participante
+            AND pp2.id_participante > pp1.id_participante
         LEFT JOIN jugador j1 ON j1.id_participante = pp1.id_participante
         LEFT JOIN equipo e1 ON e1.id_participante = pp1.id_participante
         LEFT JOIN jugador j2 ON j2.id_participante = pp2.id_participante
         LEFT JOIN equipo e2 ON e2.id_participante = pp2.id_participante
         WHERE p.id_fase = %s
-        GROUP BY p.id_partida, pp1.id_participante, pp2.id_participante,
-                 j1.gamertag, e1.nombre, j2.gamertag, e2.nombre,
-                 pp1.resultado, pp2.resultado, pp1.es_ganador, pp2.es_ganador
+        AND pp1.id_participante IS NOT NULL
         ORDER BY p.fecha_hora
     """, (id_fase,))
     rows = cursor.fetchall()
@@ -48,8 +46,18 @@ def listar_partidas(id_fase: int):
             "fecha_hora": str(r[1]),
             "estado": r[2],
             "observaciones": r[3],
-            "participante1": {"nombre": r[6], "resultado": r[8], "ganador": r[10]},
-            "participante2": {"nombre": r[7], "resultado": r[9], "ganador": r[11]}
+            "participante1": {
+                "id": r[4],
+                "nombre": r[6],
+                "puntaje": float(r[8]) if r[8] else None,
+                "ganador": r[10] == 1 if r[10] else False
+            },
+            "participante2": {
+                "id": r[5],
+                "nombre": r[7],
+                "puntaje": float(r[9]) if r[9] else None,
+                "ganador": r[11] == 1 if r[11] else False
+            }
         }
         for r in rows
     ]
@@ -66,11 +74,11 @@ def crear_partida(id_fase: int, datos: dict):
         )
         id_partida = cursor.fetchone()[0]
 
-        for id_participante in datos.get("participantes", []):
+        for idx, id_participante in enumerate(datos.get("participantes", [])):
             cursor.execute(
-                """INSERT INTO partida_participante (id_partida, id_participante, es_ganador)
-                   VALUES (%s, %s, FALSE)""",
-                (id_partida, id_participante)
+                """INSERT INTO partida_participante (id_partida, id_participante, puesto_obtenido, puntaje)
+                   VALUES (%s, %s, %s, 0)""",
+                (id_partida, id_participante, idx + 1)
             )
 
         conn.commit()
@@ -91,9 +99,9 @@ def registrar_resultado(id_partida: int, datos: dict):
         for resultado in datos.get("resultados", []):
             cursor.execute(
                 """UPDATE partida_participante 
-                   SET resultado = %s, es_ganador = %s
+                   SET puntaje = %s, puesto_obtenido = %s
                    WHERE id_partida = %s AND id_participante = %s""",
-                (resultado["resultado"], resultado["ganador"],
+                (resultado["puntaje"], resultado["puesto"],
                  id_partida, resultado["id_participante"])
             )
 
