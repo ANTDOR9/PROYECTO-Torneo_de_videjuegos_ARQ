@@ -113,3 +113,64 @@ def unirse_equipo(datos: dict):
         cursor.close()
         conn.close()
         return {"error": str(e)}
+
+
+
+@router.get("/equipos/{id_equipo}")
+def detalle_equipo(id_equipo: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # Info del equipo
+        cursor.execute("""
+            SELECT e.id_equipo, e.nombre, v.nombre as videojuego,
+                   j.gamertag as capitan, e.activo, e.fecha_creacion,
+                   e.codigo_invitacion, e.imagen
+            FROM equipo e
+            JOIN videojuego v ON e.id_videojuego = v.id_videojuego
+            JOIN jugador j ON e.id_capitan = j.id_jugador
+            WHERE e.id_equipo = %s
+        """, (id_equipo,))
+        equipo = cursor.fetchone()
+
+        if not equipo:
+            return {"error": "Equipo no encontrado"}
+
+        # Miembros del equipo
+        cursor.execute("""
+            SELECT j.id_jugador, j.gamertag, j.avatar, j.rango,
+                   je.rol, je.fecha_ingreso
+            FROM jugador_equipo je
+            JOIN jugador j ON je.id_jugador = j.id_jugador
+            WHERE je.id_equipo = %s AND je.activo = 'S'
+            ORDER BY je.fecha_ingreso ASC
+        """, (id_equipo,))
+        miembros = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+        return {
+            "id": equipo[0],
+            "nombre": equipo[1],
+            "videojuego": equipo[2],
+            "capitan": equipo[3],
+            "activo": equipo[4],
+            "fecha_creacion": str(equipo[5]) if equipo[5] else None,
+            "codigo_invitacion": equipo[6],
+            "imagen": equipo[7] if len(equipo) > 7 else None,
+            "miembros": [
+                {
+                    "id": m[0],
+                    "gamertag": m[1],
+                    "avatar": m[2],
+                    "rango": m[3],
+                    "rol": m[4],
+                    "fecha_ingreso": str(m[5]) if m[5] else None
+                }
+                for m in miembros
+            ]
+        }
+    except Exception as e:
+        cursor.close()
+        conn.close()
+        return {"error": str(e)}

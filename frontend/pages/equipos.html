@@ -484,7 +484,9 @@
       const jugador = jugadorData ? JSON.parse(jugadorData) : null;
 
       grid.innerHTML = equipos.map(e => `
-        <div class="equipo-card">
+        <div class="equipo-card" onclick="window.location.href='equipo.html?id=${e.id}'" style="cursor:pointer">
+
+
           <div class="juego">${e.videojuego}</div>
           <h3>${e.nombre}</h3>
           <div class="info">Capitán: <span>${e.capitan}</span></div>

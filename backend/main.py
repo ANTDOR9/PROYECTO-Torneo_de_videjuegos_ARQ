@@ -36,6 +36,29 @@ app.include_router(inscripciones_router, prefix="/api")
 app.include_router(partidas_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 
+
+
+
+@app.post("/api/equipos/{id_equipo}/imagen")
+async def subir_imagen_equipo(id_equipo: int, archivo: UploadFile = File(...)):
+    ext = archivo.filename.split(".")[-1]
+    nombre_archivo = f"equipo_{id_equipo}.{ext}"
+    ruta = f"avatares/{nombre_archivo}"
+    with open(ruta, "wb") as buffer:
+        shutil.copyfileobj(archivo.file, buffer)
+    base_url = os.getenv("BASE_URL", "http://127.0.0.1:8000")
+    url = f"{base_url}/avatares/{nombre_archivo}"
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE equipo SET imagen = %s WHERE id_equipo = %s", (url, id_equipo))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return {"mensaje": "Imagen actualizada", "url": url}
+
+
+
+
 @app.get("/")
 def inicio():
     return {"mensaje": "Bienvenido a AQP Gaming API"}

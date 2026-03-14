@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQP Gaming — Equipo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+    nav { background: #111; border-bottom: 2px solid #cc0000; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+    nav .logo { font-size: 1.6rem; font-weight: 900; color: #cc0000; letter-spacing: 2px; text-transform: uppercase; }
+    nav .logo span { color: #fff; }
+    nav ul { list-style: none; display: flex; gap: 32px; align-items: center; }
+    nav ul a { color: #aaa; text-decoration: none; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+    nav ul a:hover { color: #cc0000; }
+    .btn-perfil { background: transparent; border: 1px solid #cc0000; color: #cc0000; padding: 6px 16px; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .btn-perfil:hover { background: #cc0000; color: #fff; }
+    .hero-equipo { background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%); border-bottom: 1px solid #222; padding: 48px 40px; max-width: 1100px; margin: 0 auto; display: flex; gap: 32px; align-items: center; }
+    .equipo-imagen { width: 120px; height: 120px; background: #1a0000; border: 3px solid #cc0000; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 900; color: #cc0000; overflow: hidden; flex-shrink: 0; position: relative; }
+    .equipo-imagen img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-cambiar-img { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); background: #cc0000; color: #fff; border: none; padding: 4px 10px; font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
+    .equipo-info h1 { font-size: 2rem; font-weight: 900; letter-spacing: 2px; }
+    .equipo-info .juego { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #cc0000; margin-top: 8px; }
+    .equipo-info .capitan { font-size: 0.85rem; color: #666; margin-top: 8px; }
+    .equipo-info .capitan span { color: #aaa; }
+    .codigo-badge { display: inline-block; margin-top: 14px; padding: 6px 12px; background: rgba(204,0,0,0.1); border: 1px dashed #cc0000; color: #cc0000; font-size: 0.85rem; font-weight: 700; letter-spacing: 3px; cursor: pointer; }
+    .contenido { max-width: 1100px; margin: 0 auto; padding: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+    .card { background: #111; border: 1px solid #222; border-top: 3px solid #cc0000; padding: 28px; }
+    .card h3 { font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: #cc0000; margin-bottom: 20px; }
+    .miembro { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #1a1a1a; }
+    .miembro:last-child { border-bottom: none; }
+    .miembro-avatar { width: 44px; height: 44px; background: #1a0000; border: 2px solid #cc0000; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 900; color: #cc0000; overflow: hidden; flex-shrink: 0; }
+    .miembro-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .miembro-info { flex: 1; }
+    .miembro-info .gamertag { font-size: 0.95rem; font-weight: 700; }
+    .miembro-info .rol { font-size: 0.75rem; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    .capitan-badge { font-size: 0.65rem; padding: 2px 6px; background: rgba(255,200,0,0.15); color: #ffcc00; border: 1px solid #ffcc00; letter-spacing: 1px; text-transform: uppercase; }
+    .dato { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
+    .dato:last-child { border-bottom: none; }
+    .dato .label { color: #555; }
+    .estado-S { color: #00c864; }
+    .estado-N { color: #666; }
+    .loading { text-align: center; color: #444; padding: 60px; }
+    .breadcrumb { font-size: 0.75rem; color: #444; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; max-width: 1100px; margin: 16px auto 0; padding: 0 40px; }
+    .breadcrumb a { color: #cc0000; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AQP<span>Gaming</span></div>
+  <ul>
+    <li><a href="index.html">Torneos</a></li>
+    <li><a href="equipos.html">Equipos</a></li>
+    <li id="nav-admin"></li>
+    <li id="nav-sesion"></li>
+  </ul>
+</nav>
+
+<div id="app">
+  <div class="loading">Cargando equipo...</div>
+</div>
+
+<input type="file" id="input-img" accept="image/*" style="display:none" onchange="subirImagen(this)">
+
+<script>
+  const API = 'https://proyecto-torneodevidejuegosarq-production.up.railway.app/api';
+
+  function configurarNavbar() {
+    const jugadorData = localStorage.getItem('jugador');
+    const navSesion = document.getElementById('nav-sesion');
+    const navAdmin = document.getElementById('nav-admin');
+    if (jugadorData) {
+      const jugador = JSON.parse(jugadorData);
+      navSesion.innerHTML = `<a href="perfil.html" class="btn-perfil">👤 ${jugador.gamertag}</a>`;
+      if (navAdmin && (jugador.rol === 'admin' || jugador.rol === 'super_admin')) {
+        navAdmin.innerHTML = `<a href="admin.html">Admin</a>`;
+      }
+    } else {
+      navSesion.innerHTML = `<a href="login.html" class="btn-perfil">Iniciar sesión</a>`;
+    }
+  }
+
+  function abrirSelectorImagen() {
+    document.getElementById('input-img').click();
+  }
+
+  async function subirImagen(input) {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const archivo = input.files[0];
+    if (!archivo) return;
+
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    try {
+      const res = await fetch(`${API}/equipos/${id}/imagen`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.url) {
+        document.getElementById('img-equipo').src = data.url;
+        setTimeout(() => location.reload(), 1000);
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  async function cargarEquipo() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (!id) { window.location.href = 'equipos.html'; return; }
+
+    try {
+      const res = await fetch(`${API}/equipos/${id}`);
+      const equipo = await res.json();
+
+      if (equipo.error) { window.location.href = 'equipos.html'; return; }
+
+      const jugadorData = localStorage.getItem('jugador');
+      const jugador = jugadorData ? JSON.parse(jugadorData) : null;
+      const esCapitan = jugador && jugador.gamertag === equipo.capitan;
+
+      const inicial = equipo.nombre.charAt(0).toUpperCase();
+      const imagenHTML = equipo.imagen
+        ? `<img id="img-equipo" src="${equipo.imagen}" alt="imagen equipo">`
+        : `<span>${inicial}</span>`;
+
+      document.title = `AQP Gaming — ${equipo.nombre}`;
+
+      const miembrosHTML = equipo.miembros.length === 0
+        ? '<div style="color:#333; text-align:center; padding:20px;">No hay miembros registrados.</div>'
+        : equipo.miembros.map(m => `
+          <div class="miembro">
+            <div class="miembro-avatar">
+              ${m.avatar ? `<img src="${m.avatar}" alt="${m.gamertag}">` : m.gamertag.charAt(0).toUpperCase()}
+            </div>
+            <div class="miembro-info">
+              <div class="gamertag">
+                ${m.gamertag}
+                ${m.gamertag === equipo.capitan ? '<span class="capitan-badge">Capitán</span>' : ''}
+              </div>
+              <div class="rol">${m.rol || 'Titular'}</div>
+            </div>
+          </div>
+        `).join('');
+
+      document.getElementById('app').innerHTML = `
+        <div class="breadcrumb">
+          <a href="equipos.html">Equipos</a> / ${equipo.nombre}
+        </div>
+
+        <div class="hero-equipo">
+          <div class="equipo-imagen">
+            ${imagenHTML}
+            ${esCapitan ? `<button class="btn-cambiar-img" onclick="abrirSelectorImagen()">Cambiar</button>` : ''}
+          </div>
+          <div class="equipo-info">
+            <div class="juego">${equipo.videojuego}</div>
+            <h1>${equipo.nombre}</h1>
+            <div class="capitan">Capitán: <span>${equipo.capitan}</span></div>
+            ${esCapitan && equipo.codigo_invitacion ? `
+              <div class="codigo-badge" onclick="navigator.clipboard.writeText('${equipo.codigo_invitacion}'); alert('Código copiado: ${equipo.codigo_invitacion}')">
+                🔑 ${equipo.codigo_invitacion}
+              </div>` : ''}
+          </div>
+        </div>
+
+        <div class="contenido">
+          <div class="card">
+            <h3>Miembros (${equipo.miembros.length})</h3>
+            ${miembrosHTML}
+          </div>
+          <div class="card">
+            <h3>Información</h3>
+            <div class="dato">
+              <span class="label">Videojuego</span>
+              <span>${equipo.videojuego}</span>
+            </div>
+            <div class="dato">
+              <span class="label">Fundado</span>
+              <span>${equipo.fecha_creacion || '-'}</span>
+            </div>
+            <div class="dato">
+              <span class="label">Estado</span>
+              <span class="estado-${equipo.activo}">${equipo.activo === 'S' ? 'Activo' : 'Inactivo'}</span>
+            </div>
+            <div class="dato">
+              <span class="label">Miembros</span>
+              <span>${equipo.miembros.length}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } catch(e) {
+      document.getElementById('app').innerHTML = '<div class="loading">Error al cargar el equipo.</div>';
+    }
+  }
+
+  configurarNavbar();
+  cargarEquipo();
+</script>
+
+</body>
+</html>
