@@ -290,6 +290,7 @@
       <div class="contenido">
         <div class="tabs">
           <button class="tab activo" data-tab="torneos" onclick="cambiarTab('torneos')">Torneos</button>
+          <button class="tab" data-tab="bracket" onclick="cambiarTab('bracket'); cargarTorneosSelect()">Bracket</button>
           ${esSuperAdmin ? `<button class="tab" data-tab="usuarios" onclick="cambiarTab('usuarios'); cargarUsuarios()">Usuarios</button>` : ''}
         </div>
 
@@ -326,6 +327,48 @@
           <div id="lista-torneos"><div class="loading">Cargando...</div></div>
         </div>
 
+      <div class="panel" id="panel-bracket">
+        <div class="card">
+          <h3>Seleccionar torneo y fase</h3>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="campo">
+              <label>Torneo</label>
+              <select id="b-torneo" onchange="cargarFasesSelect()"></select>
+            </div>
+            <div class="campo">
+              <label>Fase</label>
+              <select id="b-fase"></select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="cargarBracketAdmin()">Ver bracket</button>
+        </div>
+
+        <div id="bracket-contenido"></div>
+
+        <div class="card" style="margin-top:20px;" id="card-nueva-partida" style="display:none">
+          <h3>Crear nueva partida</h3>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="campo">
+              <label>Participante 1</label>
+              <select id="np-part1"></select>
+            </div>
+            <div class="campo">
+              <label>Participante 2</label>
+              <select id="np-part2"></select>
+            </div>
+            <div class="campo">
+              <label>Fecha y hora</label>
+              <input type="datetime-local" id="np-fecha">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="crearPartida()">Crear partida</button>
+          <div class="mensaje" id="msg-partida"></div>
+        </div>
+      </div>
+
+
+
+
         ${esSuperAdmin ? `
         <div class="panel" id="panel-usuarios">
           <div class="seccion-titulo">Gestión de usuarios</div>
@@ -339,6 +382,190 @@
   }
 
   iniciar();
+
+
+  
+
+
+
+    async function cargarTorneosSelect() {
+    const select = document.getElementById('b-torneo');
+    if (select.options.length > 0) return;
+    const res = await fetch(`${API}/torneos`);
+    const torneos = await res.json();
+    torneos.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = t.nombre;
+      select.appendChild(opt);
+    });
+    cargarFasesSelect();
+  }
+
+  async function cargarFasesSelect() {
+    const idTorneo = document.getElementById('b-torneo').value;
+    const select = document.getElementById('b-fase');
+    select.innerHTML = '';
+    if (!idTorneo) return;
+    const res = await fetch(`${API}/torneos/${idTorneo}/fases`);
+    const fases = await res.json();
+    if (fases.length === 0) {
+      select.innerHTML = '<option value="">Sin fases</option>';
+      return;
+    }
+    fases.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.id;
+      opt.textContent = f.nombre;
+      select.appendChild(opt);
+    });
+  }
+
+  async function cargarBracketAdmin() {
+    const idFase = document.getElementById('b-fase').value;
+    const idTorneo = document.getElementById('b-torneo').value;
+    const contenedor = document.getElementById('bracket-contenido');
+
+    if (!idFase) {
+      contenedor.innerHTML = '<div class="loading">Selecciona una fase primero.</div>';
+      return;
+    }
+
+    try {
+      const [resPartidas, resInscritos] = await Promise.all([
+        fetch(`${API}/fases/${idFase}/partidas`),
+        fetch(`${API}/torneos/${idTorneo}/inscripciones`)
+      ]);
+
+      const partidas = await resPartidas.json();
+      const inscritos = await resInscritos.json();
+
+      document.getElementById('card-nueva-partida').style.display = 'block';
+
+      const selectP1 = document.getElementById('np-part1');
+      const selectP2 = document.getElementById('np-part2');
+      selectP1.innerHTML = '';
+      selectP2.innerHTML = '';
+      inscritos.forEach(i => {
+        [selectP1, selectP2].forEach(sel => {
+          const opt = document.createElement('option');
+          opt.value = i.id_participante || i.id;
+          opt.textContent = i.nombre;
+          sel.appendChild(opt);
+        });
+      });
+
+      if (partidas.length === 0) {
+        contenedor.innerHTML = `
+          <div class="card" style="margin-top:20px;">
+            <h3>Bracket</h3>
+            <div class="loading">No hay partidas aún. Crea la primera.</div>
+          </div>`;
+        return;
+      }
+
+      contenedor.innerHTML = `
+        <div class="card" style="margin-top:20px;">
+          <h3>Partidas — ${partidas.length} en total</h3>
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Participante 1</th>
+                <th>Resultado</th>
+                <th>Participante 2</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${partidas.map(p => `
+                <tr>
+                  <td class="${p.participante1.ganador ? 'ganador' : ''}">${p.participante1.nombre}</td>
+                  <td style="text-align:center; color:#cc0000; font-weight:700;">
+                    ${p.participante1.resultado ?? '-'} : ${p.participante2.resultado ?? '-'}
+                  </td>
+                  <td class="${p.participante2.ganador ? 'ganador' : ''}">${p.participante2.nombre}</td>
+                  <td>${p.estado}</td>
+                  <td>
+                    ${p.estado !== 'Finalizada' ? `
+                      <button class="btn-secondary" onclick="abrirResultado(${p.id}, '${p.participante1.nombre}', '${p.participante2.nombre}')">
+                        Registrar resultado
+                      </button>` : '<span style="color:#00c864">✓ Finalizada</span>'}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    } catch(e) {
+      contenedor.innerHTML = '<div class="loading">Error al cargar bracket.</div>';
+    }
+  }
+
+  async function crearPartida() {
+    const idFase = document.getElementById('b-fase').value;
+    const part1 = parseInt(document.getElementById('np-part1').value);
+    const part2 = parseInt(document.getElementById('np-part2').value);
+    const fecha = document.getElementById('np-fecha').value;
+    const msg = document.getElementById('msg-partida');
+
+    if (part1 === part2) {
+      msg.textContent = 'Los dos participantes deben ser diferentes';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/fases/${idFase}/partidas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fecha_hora: fecha || '2026-01-01 00:00:00',
+          participantes: [part1, part2]
+        })
+      });
+      const data = await res.json();
+      if (data.error) {
+        msg.textContent = data.error;
+        msg.className = 'mensaje error';
+        msg.style.display = 'block';
+        return;
+      }
+      msg.textContent = '¡Partida creada!';
+      msg.className = 'mensaje exito';
+      msg.style.display = 'block';
+      setTimeout(() => cargarBracketAdmin(), 1500);
+    } catch(e) {
+      msg.textContent = 'Error al conectar';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+    }
+  }
+
+  function abrirResultado(idPartida, nombre1, nombre2) {
+    const res1 = prompt(`Resultado de ${nombre1}:`);
+    if (res1 === null) return;
+    const res2 = prompt(`Resultado de ${nombre2}:`);
+    if (res2 === null) return;
+    const ganador = parseInt(res1) > parseInt(res2) ? 1 : 2;
+
+    fetch(`${API}/partidas/${idPartida}/resultado`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        resultados: [
+          { id_participante: null, resultado: parseInt(res1), ganador: ganador === 1 },
+          { id_participante: null, resultado: parseInt(res2), ganador: ganador === 2 }
+        ]
+      })
+    }).then(() => cargarBracketAdmin());
+  }
+
+
+
+
 </script>
 
 </body>
