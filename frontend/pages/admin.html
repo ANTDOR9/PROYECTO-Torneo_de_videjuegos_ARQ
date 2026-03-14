@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQP Gaming — Panel Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+    nav { background: #111; border-bottom: 2px solid #cc0000; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+    nav .logo { font-size: 1.6rem; font-weight: 900; color: #cc0000; letter-spacing: 2px; text-transform: uppercase; }
+    nav .logo span { color: #fff; }
+    nav ul { list-style: none; display: flex; gap: 32px; align-items: center; }
+    nav ul a { color: #aaa; text-decoration: none; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
+    nav ul a:hover { color: #cc0000; }
+    .btn-perfil { background: transparent; border: 1px solid #cc0000; color: #cc0000; padding: 6px 16px; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .btn-perfil:hover { background: #cc0000; color: #fff; }
+    .hero { background: linear-gradient(135deg, #1a0000 0%, #0a0a0a 60%); border-bottom: 1px solid #222; padding: 40px; max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .hero h1 { font-size: 1.8rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
+    .hero h1 span { color: #cc0000; }
+    .badge-rol { padding: 6px 14px; background: rgba(204,0,0,0.15); border: 1px solid #cc0000; color: #cc0000; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .contenido { max-width: 1100px; margin: 0 auto; padding: 40px; }
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid #222; margin-bottom: 32px; }
+    .tab { padding: 12px 24px; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #444; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none; }
+    .tab:hover { color: #fff; }
+    .tab.activo { color: #cc0000; border-bottom-color: #cc0000; }
+    .panel { display: none; }
+    .panel.activo { display: block; }
+    .seccion-titulo { font-size: 0.9rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #cc0000; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .card { background: #111; border: 1px solid #222; border-top: 3px solid #cc0000; padding: 28px; margin-bottom: 20px; }
+    .card h3 { font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; color: #cc0000; margin-bottom: 20px; }
+    .campo { margin-bottom: 16px; }
+    .campo label { display: block; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: #666; margin-bottom: 8px; }
+    .campo input, .campo select, .campo textarea { width: 100%; background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 12px 16px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+    .campo input:focus, .campo select:focus, .campo textarea:focus { border-color: #cc0000; }
+    .campo select option { background: #111; }
+    .campo textarea { resize: vertical; min-height: 80px; }
+    .btn-primary { padding: 12px 28px; background: #cc0000; color: #fff; border: none; font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-primary:hover { background: #ff0000; }
+    .btn-secondary { padding: 8px 16px; background: transparent; color: #666; border: 1px solid #333; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-secondary:hover { border-color: #666; color: #aaa; }
+    .btn-danger { padding: 8px 16px; background: transparent; color: #cc0000; border: 1px solid #cc0000; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-danger:hover { background: #cc0000; color: #fff; }
+    .tabla { width: 100%; border-collapse: collapse; }
+    .tabla th { text-align: left; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: #444; padding: 12px 16px; border-bottom: 1px solid #222; }
+    .tabla td { padding: 12px 16px; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
+    .tabla tr:last-child td { border-bottom: none; }
+    .tabla tr:hover td { background: #111; }
+    .rol-badge { padding: 3px 8px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .rol-super_admin { background: rgba(255,200,0,0.15); color: #ffcc00; }
+    .rol-admin { background: rgba(204,0,0,0.15); color: #cc0000; }
+    .rol-jugador { background: rgba(100,100,100,0.15); color: #666; }
+    .mensaje { padding: 10px; font-size: 0.85rem; text-align: center; margin-top: 12px; display: none; }
+    .mensaje.error { background: rgba(204,0,0,0.15); color: #ff4444; border: 1px solid #cc0000; }
+    .mensaje.exito { background: rgba(0,200,100,0.15); color: #00c864; border: 1px solid #00c864; }
+    .loading { text-align: center; color: #444; padding: 40px; }
+    .acceso-denegado { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; text-align: center; }
+    .acceso-denegado h2 { font-size: 1.2rem; color: #444; letter-spacing: 2px; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AQP<span>Gaming</span></div>
+  <ul>
+    <li><a href="index.html">Torneos</a></li>
+    <li><a href="equipos.html">Equipos</a></li>
+    <li id="nav-sesion"></li>
+  </ul>
+</nav>
+
+<div id="app">
+  <div class="loading">Verificando acceso...</div>
+</div>
+
+<script>
+  const API = 'https://proyecto-torneodevidejuegosarq-production.up.railway.app/api';
+
+  function configurarNavbar() {
+    const jugadorData = localStorage.getItem('jugador');
+    const navSesion = document.getElementById('nav-sesion');
+    if (jugadorData) {
+      const jugador = JSON.parse(jugadorData);
+      navSesion.innerHTML = `<a href="perfil.html" class="btn-perfil">👤 ${jugador.gamertag}</a>`;
+    } else {
+      navSesion.innerHTML = `<a href="login.html" class="btn-perfil">Iniciar sesión</a>`;
+    }
+  }
+
+  function cambiarTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('activo'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('activo');
+    document.getElementById(`panel-${tab}`).classList.add('activo');
+  }
+
+  async function crearTorneo() {
+    const nombre = document.getElementById('t-nombre').value;
+    const id_videojuego = parseInt(document.getElementById('t-juego').value);
+    const fecha_inicio = document.getElementById('t-fecha').value;
+    const premio_total = parseFloat(document.getElementById('t-premio').value) || null;
+    const descripcion = document.getElementById('t-descripcion').value;
+    const msg = document.getElementById('msg-torneo');
+
+    if (!nombre || !fecha_inicio) {
+      msg.textContent = 'Nombre y fecha son obligatorios';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/torneos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, id_videojuego, fecha_inicio, premio_total, descripcion })
+      });
+      const data = await res.json();
+
+      if (data.error) {
+        msg.textContent = data.error;
+        msg.className = 'mensaje error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      msg.textContent = '¡Torneo creado exitosamente!';
+      msg.className = 'mensaje exito';
+      msg.style.display = 'block';
+      document.getElementById('t-nombre').value = '';
+      document.getElementById('t-fecha').value = '';
+      document.getElementById('t-premio').value = '';
+      document.getElementById('t-descripcion').value = '';
+      cargarTorneos();
+
+    } catch(e) {
+      msg.textContent = 'Error al conectar con el servidor';
+      msg.className = 'mensaje error';
+      msg.style.display = 'block';
+    }
+  }
+
+  async function cargarTorneos() {
+    const contenedor = document.getElementById('lista-torneos');
+    if (!contenedor) return;
+    try {
+      const res = await fetch(`${API}/torneos`);
+      const torneos = await res.json();
+      if (torneos.length === 0) {
+        contenedor.innerHTML = '<div class="loading">No hay torneos aún.</div>';
+        return;
+      }
+      contenedor.innerHTML = `
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Videojuego</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Premio</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${torneos.map(t => `
+              <tr>
+                <td>${t.nombre}</td>
+                <td>${t.videojuego}</td>
+                <td>${t.fecha_inicio}</td>
+                <td>${t.estado}</td>
+                <td>${t.premio_total ? 'S/ ' + t.premio_total.toFixed(2) : '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    } catch(e) {
+      contenedor.innerHTML = '<div class="loading">Error al cargar.</div>';
+    }
+  }
+
+  async function cargarUsuarios() {
+    const contenedor = document.getElementById('lista-usuarios');
+    if (!contenedor) return;
+    try {
+      const res = await fetch(`${API}/jugadores`);
+      const jugadores = await res.json();
+      contenedor.innerHTML = `
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Gamertag</th>
+              <th>Nombre</th>
+              <th>Rol</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${jugadores.map(j => `
+              <tr>
+                <td>${j.gamertag}</td>
+                <td>${j.nombre || '-'}</td>
+                <td><span class="rol-badge rol-${j.rol || 'jugador'}">${j.rol || 'jugador'}</span></td>
+                <td id="acciones-${j.id}">
+                  ${renderAcciones(j)}
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    } catch(e) {
+      contenedor.innerHTML = '<div class="loading">Error al cargar.</div>';
+    }
+  }
+
+  function renderAcciones(j) {
+    const miData = JSON.parse(localStorage.getItem('jugador'));
+    if (j.id === miData.id) return '<span style="color:#333">Tú</span>';
+    if (j.rol === 'super_admin') return '<span style="color:#ffcc00">Super Admin</span>';
+    if (j.rol === 'admin') {
+      return `<button class="btn-danger" onclick="cambiarRol(${j.id}, 'jugador')">Quitar admin</button>`;
+    }
+    return `<button class="btn-secondary" onclick="cambiarRol(${j.id}, 'admin')">Hacer admin</button>`;
+  }
+
+  async function cambiarRol(id_jugador, nuevo_rol) {
+    try {
+      const res = await fetch(`${API}/jugadores/${id_jugador}/rol`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rol: nuevo_rol })
+      });
+      const data = await res.json();
+      if (data.error) { alert(data.error); return; }
+      cargarUsuarios();
+    } catch(e) {
+      alert('Error al cambiar rol');
+    }
+  }
+
+  async function cargarVideojuegosSelect() {
+    const select = document.getElementById('t-juego');
+    if (!select) return;
+    const res = await fetch(`${API}/videojuegos`);
+    const juegos = await res.json();
+    juegos.forEach(j => {
+      const opt = document.createElement('option');
+      opt.value = j.id;
+      opt.textContent = j.nombre;
+      select.appendChild(opt);
+    });
+  }
+
+  function iniciar() {
+    configurarNavbar();
+    const jugadorData = localStorage.getItem('jugador');
+
+    if (!jugadorData) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const jugador = JSON.parse(jugadorData);
+
+    if (jugador.rol !== 'admin' && jugador.rol !== 'super_admin') {
+      document.getElementById('app').innerHTML = `
+        <div class="acceso-denegado">
+          <h2>Acceso denegado</h2>
+          <p style="color:#444">No tienes permisos para ver esta página</p>
+          <a href="index.html" style="color:#cc0000; text-decoration:none; margin-top:8px">← Volver al inicio</a>
+        </div>
+      `;
+      return;
+    }
+
+    const esSuperAdmin = jugador.rol === 'super_admin';
+
+    document.getElementById('app').innerHTML = `
+      <div style="max-width:1100px; margin:0 auto;">
+        <div class="hero">
+          <div>
+            <h1>Panel de <span>Administración</span></h1>
+            <p style="color:#555; margin-top:8px; font-size:0.9rem;">Gestión de torneos y usuarios</p>
+          </div>
+          <span class="badge-rol">${jugador.rol.replace('_', ' ')}</span>
+        </div>
+      </div>
+
+      <div class="contenido">
+        <div class="tabs">
+          <button class="tab activo" data-tab="torneos" onclick="cambiarTab('torneos')">Torneos</button>
+          ${esSuperAdmin ? `<button class="tab" data-tab="usuarios" onclick="cambiarTab('usuarios'); cargarUsuarios()">Usuarios</button>` : ''}
+        </div>
+
+        <div class="panel activo" id="panel-torneos">
+          <div class="card">
+            <h3>Crear nuevo torneo</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="campo">
+                <label>Nombre del torneo</label>
+                <input type="text" id="t-nombre" placeholder="AQP Gaming Cup #2">
+              </div>
+              <div class="campo">
+                <label>Videojuego</label>
+                <select id="t-juego"></select>
+              </div>
+              <div class="campo">
+                <label>Fecha de inicio</label>
+                <input type="date" id="t-fecha">
+              </div>
+              <div class="campo">
+                <label>Premio total (S/)</label>
+                <input type="number" id="t-premio" placeholder="500">
+              </div>
+            </div>
+            <div class="campo">
+              <label>Descripción</label>
+              <textarea id="t-descripcion" placeholder="Descripción del torneo..."></textarea>
+            </div>
+            <button class="btn-primary" onclick="crearTorneo()">Crear torneo</button>
+            <div class="mensaje" id="msg-torneo"></div>
+          </div>
+
+          <div class="seccion-titulo">Torneos existentes</div>
+          <div id="lista-torneos"><div class="loading">Cargando...</div></div>
+        </div>
+
+        ${esSuperAdmin ? `
+        <div class="panel" id="panel-usuarios">
+          <div class="seccion-titulo">Gestión de usuarios</div>
+          <div id="lista-usuarios"><div class="loading">Cargando...</div></div>
+        </div>` : ''}
+      </div>
+    `;
+
+    cargarVideojuegosSelect();
+    cargarTorneos();
+  }
+
+  iniciar();
+</script>
+
+</body>
+</html>

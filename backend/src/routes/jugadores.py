@@ -88,3 +88,34 @@ def torneos_jugador(id_jugador: int):
         }
         for r in rows
     ]
+
+@router.put("/jugadores/{id_jugador}/rol")
+def cambiar_rol(id_jugador: int, datos: dict):
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        # No se puede cambiar el rol de un super_admin
+        cursor.execute("SELECT rol FROM jugador WHERE id_jugador = %s", (id_jugador,))
+        jugador = cursor.fetchone()
+        if not jugador:
+            return {"error": "Jugador no encontrado"}
+        if jugador[0] == 'super_admin':
+            return {"error": "No se puede modificar el rol de un super admin"}
+
+        nuevo_rol = datos.get("rol")
+        if nuevo_rol not in ['jugador', 'admin']:
+            return {"error": "Rol inválido"}
+
+        cursor.execute(
+            "UPDATE jugador SET rol = %s WHERE id_jugador = %s",
+            (nuevo_rol, id_jugador)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return {"mensaje": f"Rol actualizado a {nuevo_rol}"}
+    except Exception as e:
+        conn.rollback()
+        cursor.close()
+        conn.close()
+        return {"error": str(e)}

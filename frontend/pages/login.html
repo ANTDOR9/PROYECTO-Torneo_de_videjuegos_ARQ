@@ -233,7 +233,6 @@
       // Guardar token y datos del jugador
       localStorage.setItem('token', data.token);
       localStorage.setItem('jugador', JSON.stringify(data.jugador));
-
       mostrarMensaje(`¡Bienvenido ${data.jugador.gamertag}!`, 'exito');
 
       setTimeout(() => {
