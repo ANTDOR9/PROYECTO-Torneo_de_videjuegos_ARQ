@@ -9,15 +9,12 @@ def registro(datos: dict):
     conn = get_connection()
     cursor = conn.cursor()
     try:
-        # Verificar si el email ya existe
         cursor.execute("SELECT id_jugador FROM jugador WHERE email = %s", (datos["email"],))
         if cursor.fetchone():
             return {"error": "El email ya está registrado"}
 
-        # Encriptar contraseña
         password_hash = encriptar_password(datos["password"])
 
-        # Crear participante
         cursor.execute(
             """INSERT INTO participante (tipo, id_videojuego, estado)
                VALUES (%s, %s, %s) RETURNING id_participante""",
@@ -25,7 +22,6 @@ def registro(datos: dict):
         )
         id_participante = cursor.fetchone()[0]
 
-        # Crear jugador
         cursor.execute(
             """INSERT INTO jugador (gamertag, email, nombre, rango, id_participante, password_hash)
                VALUES (%s, %s, %s, %s, %s, %s) RETURNING id_jugador""",
@@ -49,7 +45,8 @@ def login(datos: dict):
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "SELECT id_jugador, gamertag, nombre, password_hash FROM jugador WHERE email = %s",
+            """SELECT id_jugador, gamertag, nombre, password_hash, rol
+               FROM jugador WHERE email = %s""",
             (datos["email"],)
         )
         jugador = cursor.fetchone()
@@ -65,7 +62,8 @@ def login(datos: dict):
         token = crear_token({
             "id": jugador[0],
             "gamertag": jugador[1],
-            "nombre": jugador[2]
+            "nombre": jugador[2],
+            "rol": jugador[4]
         })
 
         return {
@@ -74,7 +72,8 @@ def login(datos: dict):
             "jugador": {
                 "id": jugador[0],
                 "gamertag": jugador[1],
-                "nombre": jugador[2]
+                "nombre": jugador[2],
+                "rol": jugador[4]
             }
         }
     except Exception as e:
