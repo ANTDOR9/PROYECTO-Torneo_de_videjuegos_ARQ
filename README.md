@@ -83,13 +83,13 @@ Estilo gamer rojo/negro
 Desplegado en Vercel
 ~~~
 LOGRAAAMOOOOOOOOOOOOOOOOSSSSSSSSSSSSSSSSSSS WIIIIIIIIIIIIIIIIIIIIIIIII
-Lo que falta para tener una app completa:
+Lo que falta para tener una app completa: (actualizacion :3) 
 
-Página de equipos
-Crear torneo desde la web (ahora solo desde Swagger)
-Inscribirse a un torneo
-Bracket con datos reales
-Panel de administrador
+Panel admin con crear torneos ✅
+Sistema de roles super_admin/admin/jugador ✅
+Bracket con datos reales — ahora muestra TBD
+Página de detalle de equipo — miembros, imagen
+Crear torneo desde admin ✅
 
 ~~~
 
