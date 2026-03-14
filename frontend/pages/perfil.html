@@ -364,6 +364,19 @@
     }
   }
 
+function configurarNavbar() {
+    const jugadorData = localStorage.getItem('jugador');
+    const navAdmin = document.getElementById('nav-admin');
+    if (jugadorData) {
+      const jugador = JSON.parse(jugadorData);
+      if (navAdmin && (jugador.rol === 'admin' || jugador.rol === 'super_admin')) {
+        navAdmin.innerHTML = `<a href="admin.html">Admin</a>`;
+      }
+    }
+  }
+
+  configurarNavbar();
+  
   cargarPerfil();
 
 

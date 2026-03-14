@@ -457,14 +457,18 @@
   function configurarNavbar() {
     const jugadorData = localStorage.getItem('jugador');
     const navSesion = document.getElementById('nav-sesion');
+    const navAdmin = document.getElementById('nav-admin');
+
     if (jugadorData) {
       const jugador = JSON.parse(jugadorData);
       navSesion.innerHTML = `<a href="perfil.html" class="btn-perfil">👤 ${jugador.gamertag}</a>`;
+      if (navAdmin && (jugador.rol === 'admin' || jugador.rol === 'super_admin')) {
+        navAdmin.innerHTML = `<a href="admin.html">Admin</a>`;
+      }
     } else {
       navSesion.innerHTML = `<a href="login.html" class="btn-perfil">Iniciar sesión</a>`;
     }
   }
-
   async function cargarEquipos() {
     const grid = document.getElementById('equipos-grid');
     try {
