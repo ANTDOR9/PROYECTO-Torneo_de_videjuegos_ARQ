@@ -9,7 +9,7 @@ def listar_jugadores():
     cursor = conn.cursor()
     cursor.execute("""
         SELECT id_jugador, gamertag, email, nombre, 
-               fecha_registro, rango, avatar
+               fecha_registro, rango, avatar, rol
         FROM jugador
     """)
     rows = cursor.fetchall()
@@ -23,7 +23,8 @@ def listar_jugadores():
             "nombre": r[3],
             "fecha_registro": str(r[4]),
             "rango": r[5],
-            "avatar": r[6]
+            "avatar": r[6],
+            "rol": r[7]
         }
         for r in rows
     ]
