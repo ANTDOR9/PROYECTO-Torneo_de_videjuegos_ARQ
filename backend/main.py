@@ -11,6 +11,7 @@ from src.routes.torneos import router as torneos_router
 from src.routes.equipos import router as equipos_router
 from src.routes.fases import router as fases_router
 from src.routes.inscripciones import router as inscripciones_router
+from src.routes.partidas import router as partidas_router
 from src.routes.auth import router as auth_router
 
 app = FastAPI(title="AQP Gaming", version="1.0.0")
@@ -32,6 +33,7 @@ app.include_router(torneos_router, prefix="/api")
 app.include_router(equipos_router, prefix="/api")
 app.include_router(fases_router, prefix="/api")
 app.include_router(inscripciones_router, prefix="/api")
+app.include_router(partidas_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 
 @app.get("/")
