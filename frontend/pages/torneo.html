@@ -230,58 +230,65 @@
     }
   }
 
-  function renderBracket(fases) {
-    if (fases.length === 0) {
-      return '<div class="no-data">No hay fases registradas aún.</div>';
-    }
+async function renderBracket(fases, idTorneo) {
+  if (fases.length === 0) {
+    return '<div class="no-data">No hay fases registradas aún.</div>';
+  }
 
-    const fasesHTML = fases.map(f => `
+  let html = '';
+
+  for (const fase of fases) {
+    html += `
       <div class="fase-item">
         <div>
-          <div class="fase-nombre">${f.nombre}</div>
-          <div class="fase-formato">${f.tipo_formato}</div>
+          <div class="fase-nombre">${fase.nombre}</div>
+          <div class="fase-formato">${fase.tipo_formato}</div>
         </div>
-        <span class="fase-estado estado-${f.estado}">${
-          f.estado === 'AC' ? 'Activa' :
-          f.estado === 'PE' ? 'Pendiente' : 'Finalizada'
+        <span class="fase-estado estado-${fase.estado}">${
+          fase.estado === 'AC' ? 'Activa' :
+          fase.estado === 'PE' ? 'Pendiente' : 'Finalizada'
         }</span>
-      </div>
-    `).join('');
-
-    const bracketHTML = `
-      <div class="bracket">
-        <div class="bracket-rondas">
-          <div class="ronda">
-            <div class="ronda-titulo">Cuartos de Final</div>
-            ${[1,2,3,4].map(() => `
-              <div class="match">
-                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
-                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="ronda">
-            <div class="ronda-titulo">Semifinal</div>
-            ${[1,2].map(() => `
-              <div class="match">
-                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
-                <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="ronda">
-            <div class="ronda-titulo">Final</div>
-            <div class="match">
-              <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
-              <div class="match-equipo"><span>TBD</span><span class="puntaje">-</span></div>
-            </div>
-          </div>
-        </div>
       </div>
     `;
 
-    return fasesHTML + '<br>' + bracketHTML;
+    try {
+      const res = await fetch(`${API}/fases/${fase.id}/partidas`);
+      const partidas = await res.json();
+
+      if (partidas.length === 0) {
+        html += '<div class="no-data" style="margin-bottom:16px;">Sin partidas aún.</div>';
+        continue;
+      }
+
+      html += `
+        <div class="bracket">
+          <div class="bracket-rondas">
+            <div class="ronda">
+              <div class="ronda-titulo">${fase.nombre}</div>
+              ${partidas.map(p => `
+                <div class="match">
+                  <div class="match-equipo ${p.participante1.ganador ? 'ganador' : ''}">
+                    <span>${p.participante1.nombre}</span>
+                    <span class="puntaje">${p.participante1.resultado ?? '-'}</span>
+                  </div>
+                  <div class="match-equipo ${p.participante2.ganador ? 'ganador' : ''}">
+                    <span>${p.participante2.nombre}</span>
+                    <span class="puntaje">${p.participante2.resultado ?? '-'}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+        <br>
+      `;
+    } catch(e) {
+      html += '<div class="no-data">Error al cargar partidas.</div>';
+    }
   }
+
+  return html;
+}
 
   async function cargarTorneo() {
     const params = new URLSearchParams(window.location.search);
@@ -357,7 +364,7 @@
           </div>
 
           <div class="panel activo" id="panel-bracket">
-            ${renderBracket(fases)}
+            <div id="bracket-render">Cargando bracket...</div>
           </div>
 
           <div class="panel" id="panel-inscritos">
@@ -387,8 +394,15 @@
             </div>
           </div>
         </div>
-      `;
-    } catch(e) {
+  `;
+
+        renderBracket(fases, id).then(html => {
+          const el = document.getElementById('bracket-render');
+          if (el) el.innerHTML = html;
+        });
+
+      } catch(e) {
+
       document.getElementById('app').innerHTML = '<div class="loading">Error al cargar el torneo.</div>';
     }
   }
