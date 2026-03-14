@@ -9,7 +9,7 @@ def listar_inscripciones(id_torneo: int):
     cursor = conn.cursor()
     cursor.execute("""
         SELECT i.id_inscripcion, i.fecha_inscripcion, i.estado,
-               p.tipo,
+               p.tipo, i.id_participante,
                CASE p.tipo
                  WHEN 'J' THEN j.gamertag
                  WHEN 'E' THEN e.nombre
@@ -30,7 +30,8 @@ def listar_inscripciones(id_torneo: int):
             "fecha": str(r[1]),
             "estado": r[2],
             "tipo": r[3],
-            "nombre": r[4]
+            "id_participante": r[4],
+            "nombre": r[5]
         }
         for r in rows
     ]
