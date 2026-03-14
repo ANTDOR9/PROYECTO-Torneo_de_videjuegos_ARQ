@@ -260,6 +260,7 @@
   <ul id="nav-links">
     <li><a href="index.html">Torneos</a></li>
     <li><a href="equipos.html">Equipos</a></li>
+    <li id="nav-admin"></li>
     <li id="nav-sesion"></li>
   </ul>
 </nav>
@@ -288,20 +289,21 @@
 <script>
   const API = 'https://proyecto-torneodevidejuegosarq-production.up.railway.app/api';
 
-  function configurarNavbar() {
-    const jugadorData = localStorage.getItem('jugador');
-    const navSesion = document.getElementById('nav-sesion');
-    const btnHero = document.getElementById('btn-hero');
+function configurarNavbar() {
+  const jugadorData = localStorage.getItem('jugador');
+  const navSesion = document.getElementById('nav-sesion');
+  const navAdmin = document.getElementById('nav-admin');
 
-    if (jugadorData) {
-      const jugador = JSON.parse(jugadorData);
-      navSesion.innerHTML = `<a href="perfil.html" class="btn-perfil">👤 ${jugador.gamertag}</a>`;
-      btnHero.textContent = 'Ver torneos';
-      btnHero.href = '#torneos-grid';
-    } else {
-      navSesion.innerHTML = `<a href="login.html" class="btn-perfil">Iniciar sesión</a>`;
+  if (jugadorData) {
+    const jugador = JSON.parse(jugadorData);
+    navSesion.innerHTML = `<a href="perfil.html" class="btn-perfil">👤 ${jugador.gamertag}</a>`;
+    if (navAdmin && (jugador.rol === 'admin' || jugador.rol === 'super_admin')) {
+      navAdmin.innerHTML = `<a href="admin.html">Admin</a>`;
     }
+  } else {
+    navSesion.innerHTML = `<a href="login.html" class="btn-perfil">Iniciar sesión</a>`;
   }
+}
 
   async function cargarTorneos() {
     const grid = document.getElementById('torneos-grid');
